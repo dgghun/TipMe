@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dgg.tipme.ViewLogic.MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerInParent="true"
+        >
+
+        <ImageView
+            android:id="@+id/ImageView_mainScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:maxHeight="120dp"
+            android:maxWidth="120dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/image_bill_on_table"
+
+            />
+
+        <Button
+            style="@style/Buttons_MainScreen"
+            android:id="@+id/button_Tip"
+            android:text="@string/str_button_tip"
+            />
+
+        <Button
+            style="@style/Buttons_MainScreen"
+            android:id="@+id/button_ItemizedTip"
+            android:text="@string/str_button_itemized_tip" />
+
+        <Button
+            style="@style/Buttons_MainScreen"
+            android:id="@+id/button_Calculator"
+            android:text="@string/str_button_calculator" />
+
+    </LinearLayout>
+
+</RelativeLayout>
