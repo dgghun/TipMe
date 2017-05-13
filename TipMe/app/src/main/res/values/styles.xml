@@ -12,17 +12,18 @@
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- MainScreen Button Layout-->
     <style name="Buttons_MainScreen" parent="android:Theme.Holo">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:textSize">50sp</item>
 
         <item name="android:textColor">#C9FBFF</item>
-        <item name="android:background">@drawable/buttonshape_default</item>
+        <item name="android:background">@drawable/buttonshape_selector</item>
         <item name="android:shadowColor">#4DE7FF</item>
         <item name="android:shadowDx">0</item>
         <item name="android:shadowDy">0</item>

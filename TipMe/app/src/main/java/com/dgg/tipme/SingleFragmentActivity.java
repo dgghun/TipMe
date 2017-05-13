@@ -1,4 +1,4 @@
-package com.dgg.tipme.ViewLogic;
+package com.dgg.tipme;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
