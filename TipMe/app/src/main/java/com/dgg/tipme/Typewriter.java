@@ -1,8 +1,14 @@
 package com.dgg.tipme;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
 /**
@@ -18,6 +24,8 @@ public class Typewriter extends AppCompatTextView {
     private CharSequence mText;
     private int mIndex;
     private long mDelay = 500; //Default 500ms delay
+    private boolean mFlag_AnimateLastChar;
+
 
 
     public Typewriter(Context context) {
@@ -28,40 +36,49 @@ public class Typewriter extends AppCompatTextView {
         super(context, attrs);
     }
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler();   //Thread handler
+
     private Runnable characterAdder = new Runnable() {
         @Override
         public void run() {
+
+            //Loop to add print characters one by one
             setText(mText.subSequence(0, mIndex++));
             if(mIndex <= mText.length()) {
                 mHandler.postDelayed(characterAdder, mDelay);
             }
-            else
-                mHandler.postDelayed(blinkingLastCharacter, mDelay);
+            else {
+                mHandler.postDelayed(blinkingLastCharacter, mDelay * 10); // make last character blink
+            }
         }
     };
 
     private Runnable blinkingLastCharacter = new Runnable() {
         @Override
         public void run() {
-            if(getText().toString().equals(mText)){
-                setText(mText.subSequence(0, mText.length()-1) + "_");
-            }
-            else{
+
+            //Do this until flag is set to stop
+            if (getText().toString().equals(mText)) {
+                String text = mText.subSequence(0, mText.length() - 1) + "_";
+                setText(text);
+            } else {
                 setText(mText);
             }
-            mHandler.postDelayed(blinkingLastCharacter, mDelay * 10);
+             mHandler.postDelayed(blinkingLastCharacter, mDelay * 10);
+
         }
     };
 
     public void animateText(CharSequence text) {
         mText = text;
-        mIndex = 0;
+        mIndex = 0;     // index for loop to print out characters
 
         setText("");
+        mHandler.removeCallbacks(blinkingLastCharacter);
         mHandler.removeCallbacks(characterAdder);
         mHandler.postDelayed(characterAdder, mDelay);
     }
+
 
 
 

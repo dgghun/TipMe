@@ -1,17 +1,18 @@
 package com.dgg.tipme;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.graphics.Typeface;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.dgg.tipme.R;
 
 /**
  * Created by David_Garcia on 5/11/2017.
@@ -25,8 +26,10 @@ public class MainFragment extends Fragment {
     private Button Btn_Calculator;
     private TextView TxtView_MainHeader;
 
+    Typewriter writer_header;   //Custom class to animate textView text like a "type writer"
 
-
+    AnimationDrawable animateDrawable_TipBotBlink;
+    ImageView ImgView_TipBot;
 
     @Override
     public void onCreate(Bundle savedInstance){
@@ -37,8 +40,9 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstances){
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
+        getActivity().getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));  //hide icon in acitonbar
         setUpButtons();
+        setUpTipBotImageView();
 
         return view;
     }
@@ -47,8 +51,12 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        setUpHeader(); // Animates header
+
+        setUpHeader();                          // Animates header
+        animateDrawable_TipBotBlink.start();    // Animate tipbot blinking
+
     }
+
 
 
     /*** METHODS *******************************************************************************************************/
@@ -69,17 +77,35 @@ public class MainFragment extends Fragment {
     /** setUpHeader()
      *
      */
-    public void setUpHeader(){
-        TxtView_MainHeader = (TextView)view.findViewById(R.id.TextView_mainScreenHeader);
-        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGIB.TTF");
-        TxtView_MainHeader.setTypeface(typeface);
+    public void setUpHeader() {
+        TxtView_MainHeader = (TextView) view.findViewById(R.id.TextView_mainScreenHeader);
+        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGIB.TTF");  //get custom typeface from assets
+        TxtView_MainHeader.setTypeface(typeface);   //set header to custom typeFace
 
-       //Add a character every few seconds
-        Typewriter typewriter = (Typewriter) TxtView_MainHeader;
-        typewriter.setCharacterDelay(50);
-        typewriter.animateText(getResources().getString(R.string.str_textview_how_can_i_help));
+        //Add a character every few seconds
+        writer_header = (Typewriter) TxtView_MainHeader;
+        writer_header.setCharacterDelay(50);
+        writer_header.animateText(getResources().getString(R.string.str_textview_how_can_i_help));
+    }
 
-         // Test Thread
+
+    /** setUpTipBotImageView()
+     *
+     */
+    public void setUpTipBotImageView(){
+        ImgView_TipBot =(ImageView)view.findViewById(R.id.imageView_TipBotHead);
+        ImgView_TipBot.setImageAlpha(0); // Hide the original image so you can see the animated images play.
+        ImgView_TipBot.setBackgroundResource(R.drawable.tipbot_head_blink_animation_list);  //set to animation list xml file
+        animateDrawable_TipBotBlink = (AnimationDrawable) ImgView_TipBot.getBackground();   //set animator to imgView
+    }
+
+
+}
+
+//TODO - NOTES *******************************************************************************************
+
+
+// Test Thread
 //        Thread myThread = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -95,17 +121,15 @@ public class MainFragment extends Fragment {
 //        });
 //        myThread.start();
 
-    }
-
-    /**
-     * Runnable handler
-     */
-    Handler handlerAnimateText = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            Toast.makeText(view.getContext(), msg.toString(), Toast.LENGTH_SHORT).show();
-        }
-    };
 
 
-}
+//    /**
+//     * Runnable handler
+//     */
+//    Handler handlerAnimateText = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg){
+//            Toast.makeText(view.getContext(), msg.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    };
+

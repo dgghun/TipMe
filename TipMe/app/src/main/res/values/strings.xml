@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tip Droid</string>
+    <string name="app_name">Tip Bot</string>
     <string name="str_button_tip">Tip</string>
     <string name="str_button_itemized_tip">Itemized Tip</string>
     <string name="str_button_calculator">Calculator</string>

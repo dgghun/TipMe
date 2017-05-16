@@ -16,6 +16,20 @@
         android:layout_marginRight="16dp"
         >
 
+        <ImageView
+            android:id="@+id/imageView_TipBotHead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:maxHeight="180dp"
+            android:maxWidth="180dp"
+            android:src="@drawable/tipbot_head_blink_1" />
+
         <com.dgg.tipme.Typewriter
             android:id="@+id/TextView_mainScreenHeader"
             android:layout_height="wrap_content"
