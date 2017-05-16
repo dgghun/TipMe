@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
      */
     public void setUpTipBotImageView(){
         ImgView_TipBot =(ImageView)view.findViewById(R.id.imageView_TipBotHead);
-        ImgView_TipBot.setImageAlpha(0); // Hide the original image so you can see the animated images play.
+        ImgView_TipBot.setImageAlpha(0); // Hide the original image so you can see the animated images play..
         ImgView_TipBot.setBackgroundResource(R.drawable.tipbot_head_blink_animation_list);  //set to animation list xml file
         animateDrawable_TipBotBlink = (AnimationDrawable) ImgView_TipBot.getBackground();   //set animator to imgView
     }
