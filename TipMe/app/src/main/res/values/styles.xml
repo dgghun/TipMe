@@ -14,13 +14,13 @@
 
     <!-- MainScreen Button Layout-->
     <style name="Buttons_MainScreen" parent="android:Theme.Holo">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">6dp</item>
         <item name="android:layout_marginBottom">6dp</item>
-        <item name="android:textSize">50sp</item>
+        <item name="android:textSize">40sp</item>
 
         <item name="android:textColor">#C9FBFF</item>
         <item name="android:background">@drawable/buttonshape_selector</item>
