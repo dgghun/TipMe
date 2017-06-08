@@ -10,4 +10,44 @@
     <item android:drawable="@drawable/tipbot_head_blink_2" android:duration="50"/>
     <item android:drawable="@drawable/tipbot_head_blink_1" android:duration="1500"/>
 
+
+
 </animation-list>
+
+
+
+
+
+
+<!--Bad-->
+<!--<item android:drawable="@drawable/bothead_bad_1" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_4" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_1" android:duration="1500"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_5" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_6" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_7" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_6" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_5" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_bad_1" android:duration="1500"/>-->
+
+<!--Good-->
+<!--<item android:drawable="@drawable/bothead_good_1" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_4" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_good_1" android:duration="1500"/>-->
+
+<!--Great-->
+<!--<item android:drawable="@drawable/bothead_great_1" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_4" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_3" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_2" android:duration="50"/>-->
+<!--<item android:drawable="@drawable/bothead_great_1" android:duration="500"/>-->

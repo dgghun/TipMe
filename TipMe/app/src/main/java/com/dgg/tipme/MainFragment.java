@@ -4,11 +4,10 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.graphics.Typeface;
 import android.widget.ImageView;
@@ -52,7 +51,7 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        setUpHeader();                          // Animates header
+        setUpTextViewHeader();                          // Animates header
         animateDrawable_TipBotBlink.start();    // Animate tipbot blinking
 
     }
@@ -71,13 +70,38 @@ public class MainFragment extends Fragment {
         Btn_Calculator = (Button)view.findViewById(R.id.button_Calculator);
         Btn_ItemizedTip = (Button) view.findViewById(R.id.button_ItemizedTip);
 
+        // Tip button pressed
+        Btn_Tip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new BillAmountFragment();
+                replaceFragment(fragment);
+            }
+        });
+
     }
 
 
-    /** setUpHeader()
+
+    /** replaceFragment()
+     *
+     * @param someFragment
+     */
+    public void replaceFragment(Fragment someFragment){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left); // fragment animation
+        transaction.replace(R.id.fragment_container, someFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+
+
+
+    /** setUpTextViewHeader()
      *
      */
-    public void setUpHeader() {
+    public void setUpTextViewHeader() {
         TxtView_MainHeader = (TextView) view.findViewById(R.id.TextView_mainScreenHeader);
         Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGIB.TTF");  //get custom typeface from assets
         TxtView_MainHeader.setTypeface(typeface);   //set header to custom typeFace

@@ -7,4 +7,77 @@
     tools:context="com.dgg.tipme.MainActivity"
     >
 
+    <LinearLayout
+        android:id="@+id/TextView_whatIsBillAmountHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <com.dgg.tipme.Typewriter
+            android:id="@+id/TextView_whatIsBillAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:shadowColor="#4DE7FF"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="10"
+            android:text="@string/str_textview_what_is_bill_amount"
+            android:textAlignment="gravity"
+            android:textColor="#C9FBFF"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/TextView_whatIsBillAmountHeader"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:padding="10dp"
+        android:background="@drawable/inputshape"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_textview_dollar_sign"
+            android:textAlignment="center"
+            android:textSize="40sp"
+            android:textColor="#C9FBFF"
+            android:shadowColor="#4DE7FF"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="10"
+            />
+
+        <EditText
+            android:id="@+id/TextView_billAmountArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/str_edittext_bill_amount"
+            android:textAlignment="textEnd"
+            android:textSize="40sp"
+            android:textColor="#C9FBFF"
+            android:shadowColor="#4DE7FF"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="10"
+            android:inputType="numberDecimal"
+            android:background="@null"
+            />
+
+    </LinearLayout>
+
+
 </RelativeLayout>

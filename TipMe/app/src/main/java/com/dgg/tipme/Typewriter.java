@@ -42,7 +42,7 @@ public class Typewriter extends AppCompatTextView {
         @Override
         public void run() {
 
-            //Loop to add print characters one by one
+            //Recursive loop to print characters one by one
             setText(mText.subSequence(0, mIndex++));
             if(mIndex <= mText.length()) {
                 mHandler.postDelayed(characterAdder, mDelay);

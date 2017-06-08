@@ -4,4 +4,8 @@
     <string name="str_button_itemized_tip">Itemized Tip</string>
     <string name="str_button_calculator">Calculator</string>
     <string name="str_textview_how_can_i_help">How can I help you?</string>
+    <string name="str_textview_what_is_bill_amount">Enter bill amount\u0020</string>
+    <string name="str_edittext_bill_amount">0.00</string>
+    <string name="str_textview_dollar_sign">$</string>
+
 </resources>
