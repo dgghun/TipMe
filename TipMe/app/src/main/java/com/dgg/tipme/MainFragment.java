@@ -89,7 +89,7 @@ public class MainFragment extends Fragment {
      */
     public void replaceFragment(Fragment someFragment){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left); // fragment animation
+        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left); // fragment animation
         transaction.replace(R.id.fragment_container, someFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -109,7 +109,7 @@ public class MainFragment extends Fragment {
         //Add a character every few seconds
         writer_header = (Typewriter) TxtView_MainHeader;
         writer_header.setCharacterDelay(50);
-        writer_header.animateText(getResources().getString(R.string.str_textview_how_can_i_help));
+        writer_header.animateText(getResources().getString(R.string.str_textview_how_can_i_help), true);
     }
 
 

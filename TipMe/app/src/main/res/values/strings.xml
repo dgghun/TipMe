@@ -7,5 +7,17 @@
     <string name="str_textview_what_is_bill_amount">Enter bill amount\u0020</string>
     <string name="str_edittext_bill_amount">0.00</string>
     <string name="str_textview_dollar_sign">$</string>
+    <string name="str_button_calc_number_1">1</string>
+    <string name="str_button_calc_number_2">2</string>
+    <string name="str_button_calc_number_3">3</string>
+    <string name="str_button_calc_number_4">4</string>
+    <string name="str_button_calc_number_5">5</string>
+    <string name="str_button_calc_number_6">6</string>
+    <string name="str_button_calc_number_7">7</string>
+    <string name="str_button_calc_number_8">8</string>
+    <string name="str_button_calc_number_9">9</string>
+    <string name="str_button_calc_number_0">0</string>
+    <string name="str_button_calc_number_x">X</string>
+    <string name="str_button_calc_number_$">$</string>
 
 </resources>

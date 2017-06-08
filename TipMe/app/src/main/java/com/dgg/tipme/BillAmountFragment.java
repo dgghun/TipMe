@@ -46,6 +46,6 @@ public class BillAmountFragment extends Fragment {
         //Add a character every few seconds
         writer_header = (Typewriter) TxtView_MainHeader;
         writer_header.setCharacterDelay(50);
-        writer_header.animateText(getResources().getString(R.string.str_textview_what_is_bill_amount));
+        writer_header.animateText(getResources().getString(R.string.str_textview_what_is_bill_amount), false);
     }
 }

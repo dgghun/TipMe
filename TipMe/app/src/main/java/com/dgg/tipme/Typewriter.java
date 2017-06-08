@@ -23,8 +23,9 @@ public class Typewriter extends AppCompatTextView {
 
     private CharSequence mText;
     private int mIndex;
-    private long mDelay = 500; //Default 500ms delay
-    private boolean mFlag_AnimateLastChar;
+    private long mDelay = 500;          //Default 500ms delay
+    private long mDelayBlink = 600;    //Delay for blink animation
+    private boolean mDoBlink;
 
 
 
@@ -48,7 +49,7 @@ public class Typewriter extends AppCompatTextView {
                 mHandler.postDelayed(characterAdder, mDelay);
             }
             else {
-                mHandler.postDelayed(blinkingLastCharacter, mDelay * 10); // make last character blink
+                if(mDoBlink) mHandler.postDelayed(blinkingLastCharacter, mDelayBlink); // make last character blink
             }
         }
     };
@@ -64,14 +65,15 @@ public class Typewriter extends AppCompatTextView {
             } else {
                 setText(mText);
             }
-             mHandler.postDelayed(blinkingLastCharacter, mDelay * 10);
+             mHandler.postDelayed(blinkingLastCharacter, mDelayBlink);
 
         }
     };
 
-    public void animateText(CharSequence text) {
+    public void animateText(CharSequence text, boolean doBlink) {
         mText = text;
         mIndex = 0;     // index for loop to print out characters
+        mDoBlink = doBlink;
 
         setText("");
         mHandler.removeCallbacks(blinkingLastCharacter);

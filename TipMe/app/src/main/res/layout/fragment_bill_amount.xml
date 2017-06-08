@@ -8,7 +8,7 @@
     >
 
     <LinearLayout
-        android:id="@+id/TextView_whatIsBillAmountHeader"
+        android:id="@+id/LinearLayout_whatIsBillAmountHeader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -30,25 +30,27 @@
             android:shadowDy="0"
             android:shadowRadius="10"
             android:text="@string/str_textview_what_is_bill_amount"
-            android:textAlignment="gravity"
+            android:textAlignment="center"
             android:textColor="#C9FBFF"
             android:textSize="30sp" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/LinearLayout_enterBillAmountArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/TextView_whatIsBillAmountHeader"
+        android:layout_below="@+id/LinearLayout_whatIsBillAmountHeader"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:padding="10dp"
-        android:background="@drawable/inputshape"
+        android:background="@null"
         >
         <TextView
+            android:id="@+id/TextView_enterBillAmountHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/str_textview_dollar_sign"
@@ -62,7 +64,7 @@
             />
 
         <EditText
-            android:id="@+id/TextView_billAmountArea"
+            android:id="@+id/EditText_enterBillAmountArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/str_edittext_bill_amount"
@@ -78,6 +80,94 @@
             />
 
     </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/GridLayout_billAmountCalculator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/LinearLayout_enterBillAmountArea"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:columnCount="3"
+        android:rowCount="4"
+        >
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_1"
+            android:text="@string/str_button_calc_number_1"
+
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_2"
+            android:text="@string/str_button_calc_number_2"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_3"
+            android:text="@string/str_button_calc_number_3"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_4"
+            android:text="@string/str_button_calc_number_4"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_5"
+            android:text="@string/str_button_calc_number_5"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_6"
+            android:text="@string/str_button_calc_number_6"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_7"
+            android:text="@string/str_button_calc_number_7"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_8"
+            android:text="@string/str_button_calc_number_8"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_9"
+            android:text="@string/str_button_calc_number_9"
+            />
+
+        <Button
+            style="@style/Buttons_calculator_Red"
+            android:id="@+id/button_calcNumber_x"
+            android:text="@string/str_button_calc_number_x"
+            />
+
+        <Button
+            style="@style/Buttons_calculator"
+            android:id="@+id/button_calcNumber_0"
+            android:text="@string/str_button_calc_number_0"
+            />
+
+        <Button
+            style="@style/Buttons_calculator_Green"
+            android:id="@+id/button_calcNumber_$"
+            android:text="@string/str_button_calc_number_$"
+            />
+    </GridLayout>
 
 
 </RelativeLayout>
