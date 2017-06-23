@@ -19,5 +19,6 @@
     <string name="str_button_calc_number_0">0</string>
     <string name="str_button_calc_number_x">X</string>
     <string name="str_button_calc_number_$">$</string>
+    <string name="str_edittext_custom_toast">Custom Toast</string>
 
 </resources>

@@ -52,6 +52,7 @@ public class BillAmountFragment extends Fragment {
 
     //******************* Methods *********************//
 
+
     /**
      * setUpButtons
      */
@@ -62,7 +63,7 @@ public class BillAmountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                ButtonInputHandler inputHandler = new ButtonInputHandler();
+                ButtonInputHandler inputHandler = new ButtonInputHandler(view);
 
                 for (int i = 0; i <= buttonIds.size(); i++) {
 
@@ -82,14 +83,12 @@ public class BillAmountFragment extends Fragment {
 
         // Set button ids, button views and click listener
         for(int i = 0; i <= 11; i++) {
-            if(i == x)
-            {
+            if(i == x) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_x", "id", getActivity().getPackageName()));
                 buttons.add((Button) view.findViewById(buttonIds.get(x)));
                 buttons.get(x).setOnClickListener(clickListener);
             }
-            else if (i == $)
-            {
+            else if (i == $) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_$", "id", getActivity().getPackageName()));
                 buttons.add((Button) view.findViewById(buttonIds.get($)));
                 buttons.get($).setOnClickListener(clickListener);
@@ -100,7 +99,8 @@ public class BillAmountFragment extends Fragment {
                 buttons.get(i).setOnClickListener(clickListener);
             }
         }
-    }
+    }   //END of setUpButtons()
+
 
 
     /**
@@ -116,5 +116,5 @@ public class BillAmountFragment extends Fragment {
         mWriter_header = (Typewriter) mTxtView_MainHeader;
         mWriter_header.setCharacterDelay(50);
         mWriter_header.animateText(getResources().getString(R.string.str_textview_what_is_bill_amount), false);
-    }
+    }   //END of setupTextViewHeader()
 }
