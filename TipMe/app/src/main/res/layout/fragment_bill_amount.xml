@@ -75,7 +75,6 @@
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="10"
-            android:inputType="numberDecimal"
             android:background="@null"
             />
 
