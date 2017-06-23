@@ -3,11 +3,17 @@ package com.dgg.tipme;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.graphics.Typeface;
 import android.widget.ImageView;
@@ -74,6 +80,19 @@ public class MainFragment extends Fragment {
         Btn_Tip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int delay = 200;
+                Animation fadeOut = new AlphaAnimation(1, 0);  // the 1, 0 here notifies that we want the opacity to go from opaque (1) to transparent (0)
+                fadeOut.setInterpolator(new AccelerateInterpolator());
+                fadeOut.setStartOffset(0); // Start fading out after 500 milli seconds
+                fadeOut.setDuration(delay); // Fadeout duration should be 1000 milli seconds
+
+//                Btn_Tip.startAnimation(fadeOut);
+//                Btn_ItemizedTip.startAnimation(fadeOut);
+//                Btn_Calculator.startAnimation(fadeOut);
+//                TxtView_MainHeader.startAnimation(fadeOut);
+
+
+                //Fragment transaction - get bill amount
                 Fragment fragment = new BillAmountFragment();
                 replaceFragment(fragment);
             }
@@ -88,8 +107,12 @@ public class MainFragment extends Fragment {
      * @param someFragment
      */
     public void replaceFragment(Fragment someFragment){
+
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left); // fragment animation
+
+        // fragment animation
+        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);
         transaction.replace(R.id.fragment_container, someFragment);
         transaction.addToBackStack(null);
         transaction.commit();

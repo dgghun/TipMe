@@ -48,6 +48,7 @@
         <item name="android:shadowDx">0</item>
         <item name="android:shadowDy">0</item>
         <item name="android:shadowRadius">5</item>
+
     </style>
 
     <!-- For red delete button-->
