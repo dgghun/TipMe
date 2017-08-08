@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.graphics.Typeface;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by David_Garcia on 5/11/2017.
@@ -56,6 +58,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+
 
         setUpTextViewHeader();                          // Animates header
         animateDrawable_TipBotBlink.start();    // Animate tipbot blinking
@@ -110,6 +114,7 @@ public class MainFragment extends Fragment {
 
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
 
         // fragment animation
         transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);

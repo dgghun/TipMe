@@ -3,6 +3,8 @@ package com.dgg.tipme;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,7 @@ public class BillAmountFragment extends Fragment {
     private TextView mTxtView_MainHeader;
     private EditText mEditTxt_billInput;
     private Typewriter mWriter_header;   //Custom class to animate textView text like a "type writer"
-    private final int x = 10, $ = 11;
+    private final int DEL_BTN = 10, GETTIP_BTN = 11;
     private final List<Integer> buttonIds = new ArrayList<>();
     private final List<Button> buttons = new ArrayList<>();
 
@@ -35,7 +37,6 @@ public class BillAmountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstances) {
         view = inflater.inflate(R.layout.fragment_bill_amount, container, false);
 
-
         mEditTxt_billInput = (EditText) view.findViewById(R.id.EditText_enterBillAmountArea);
 
         setUpButtons();
@@ -45,6 +46,7 @@ public class BillAmountFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
 
         setUpTextViewHeader();
     }
@@ -65,13 +67,25 @@ public class BillAmountFragment extends Fragment {
                 int id = v.getId();
                 ButtonInputHandler inputHandler = new ButtonInputHandler(view);
 
+                //Search for button id pressed
                 for (int i = 0; i <= buttonIds.size(); i++) {
 
-                    if (id == buttonIds.get(i)) {
-                        if (i == x)
+                    if (id == buttonIds.get(i)) {   //If id found, i is the button pressed (0-9, X or $)
+                        if (i == DEL_BTN)
                             mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
-                        else if (i == $)
-                            Toast.makeText(view.getContext(), "$ = GitTip", Toast.LENGTH_SHORT).show();
+                        else if (i == GETTIP_BTN) {
+
+                            //TESTING
+                            try {
+                                Toast.makeText(view.getContext(), getFragmentManager().getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
+                            }catch (Exception e){
+                                Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                            Fragment fragment = new TipAmountFragment();
+                            replaceFragment(fragment);
+                        }
                         else
                             mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
 
@@ -81,17 +95,18 @@ public class BillAmountFragment extends Fragment {
             }
         };
 
+        int mNumberOfButtons = 11;
         // Set button ids, button views and click listener
-        for(int i = 0; i <= 11; i++) {
-            if(i == x) {
+        for(int i = 0; i <= mNumberOfButtons; i++) {
+            if(i == DEL_BTN) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_x", "id", getActivity().getPackageName()));
-                buttons.add((Button) view.findViewById(buttonIds.get(x)));
-                buttons.get(x).setOnClickListener(clickListener);
+                buttons.add((Button) view.findViewById(buttonIds.get(DEL_BTN)));
+                buttons.get(DEL_BTN).setOnClickListener(clickListener);
             }
-            else if (i == $) {
+            else if (i == GETTIP_BTN) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_$", "id", getActivity().getPackageName()));
-                buttons.add((Button) view.findViewById(buttonIds.get($)));
-                buttons.get($).setOnClickListener(clickListener);
+                buttons.add((Button) view.findViewById(buttonIds.get(GETTIP_BTN)));
+                buttons.get(GETTIP_BTN).setOnClickListener(clickListener);
             }
             else {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_" + i, "id", getActivity().getPackageName()));
@@ -117,4 +132,22 @@ public class BillAmountFragment extends Fragment {
         mWriter_header.setCharacterDelay(50);
         mWriter_header.animateText(getResources().getString(R.string.str_textview_what_is_bill_amount), false);
     }   //END of setupTextViewHeader()
+
+
+    /** replaceFragment()
+     *
+     * @param someFragment
+     */
+    public void replaceFragment(Fragment someFragment){
+
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+
+        // fragment animation
+        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);
+        transaction.replace(R.id.fragment_container, someFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 }
