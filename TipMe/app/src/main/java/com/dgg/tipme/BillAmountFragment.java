@@ -1,5 +1,6 @@
 package com.dgg.tipme;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BillAmountFragment extends Fragment {
+public class BillAmountFragment extends Fragment implements View.OnClickListener {
 
     private View view;
     private TextView mTxtView_MainHeader;
@@ -29,7 +30,7 @@ public class BillAmountFragment extends Fragment {
 
 
     @Override
-    public void onCreate(Bundle savedInstance){
+    public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
     }
 
@@ -38,17 +39,37 @@ public class BillAmountFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_bill_amount, container, false);
 
         mEditTxt_billInput = (EditText) view.findViewById(R.id.EditText_enterBillAmountArea);
-
         setUpButtons();
         return view;
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
-
-
         setUpTextViewHeader();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        ButtonInputHandler inputHandler = new ButtonInputHandler(view);
+
+        //Search for button id pressed
+        for (int i = 0; i <= buttonIds.size(); i++) {
+
+            if (id == buttonIds.get(i)) {   //If id found, i is the button pressed (0-9, X or $)
+
+                if (i == DEL_BTN)
+                    mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
+                else if (i == GETTIP_BTN) {
+                    Fragment fragment = new TipAmountFragment();
+                    ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start TipAmountFragment
+                } else    // i is a number so append it to current textView string
+                    mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
+
+                i = buttonIds.size() + 1; // break from loop
+            }
+        }
     }
 
 
@@ -58,64 +79,26 @@ public class BillAmountFragment extends Fragment {
     /**
      * setUpButtons
      */
-    public void setUpButtons(){
-
-        // Button click listener
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                ButtonInputHandler inputHandler = new ButtonInputHandler(view);
-
-                //Search for button id pressed
-                for (int i = 0; i <= buttonIds.size(); i++) {
-
-                    if (id == buttonIds.get(i)) {   //If id found, i is the button pressed (0-9, X or $)
-                        if (i == DEL_BTN)
-                            mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
-                        else if (i == GETTIP_BTN) {
-
-                            //TESTING
-                            try {
-                                Toast.makeText(view.getContext(), getFragmentManager().getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
-                            }catch (Exception e){
-                                Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                            }
-
-
-                            Fragment fragment = new TipAmountFragment();
-                            replaceFragment(fragment);
-                        }
-                        else
-                            mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
-
-                        i = buttonIds.size() + 1; // break from loop
-                    }
-                }
-            }
-        };
+    public void setUpButtons() {
 
         int mNumberOfButtons = 11;
         // Set button ids, button views and click listener
-        for(int i = 0; i <= mNumberOfButtons; i++) {
-            if(i == DEL_BTN) {
+        for (int i = 0; i <= mNumberOfButtons; i++) {
+            if (i == DEL_BTN) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_x", "id", getActivity().getPackageName()));
                 buttons.add((Button) view.findViewById(buttonIds.get(DEL_BTN)));
-                buttons.get(DEL_BTN).setOnClickListener(clickListener);
-            }
-            else if (i == GETTIP_BTN) {
+                buttons.get(DEL_BTN).setOnClickListener(this);
+            } else if (i == GETTIP_BTN) {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_$", "id", getActivity().getPackageName()));
                 buttons.add((Button) view.findViewById(buttonIds.get(GETTIP_BTN)));
-                buttons.get(GETTIP_BTN).setOnClickListener(clickListener);
-            }
-            else {
+                buttons.get(GETTIP_BTN).setOnClickListener(this);
+            } else {
                 buttonIds.add(getResources().getIdentifier("button_calcNumber_" + i, "id", getActivity().getPackageName()));
                 buttons.add((Button) view.findViewById(buttonIds.get(i)));
-                buttons.get(i).setOnClickListener(clickListener);
+                buttons.get(i).setOnClickListener(this);
             }
         }
     }   //END of setUpButtons()
-
 
 
     /**
@@ -132,22 +115,4 @@ public class BillAmountFragment extends Fragment {
         mWriter_header.setCharacterDelay(50);
         mWriter_header.animateText(getResources().getString(R.string.str_textview_what_is_bill_amount), false);
     }   //END of setupTextViewHeader()
-
-
-    /** replaceFragment()
-     *
-     * @param someFragment
-     */
-    public void replaceFragment(Fragment someFragment){
-
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-
-        // fragment animation
-        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);
-        transaction.replace(R.id.fragment_container, someFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 }
