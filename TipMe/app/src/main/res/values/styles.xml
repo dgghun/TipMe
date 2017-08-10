@@ -51,7 +51,7 @@
 
     </style>
 
-    <!-- For red delete button-->
+    <!-- For calculator red delete button-->
     <style name="Buttons_calculator_Red" parent="android:Theme.Holo">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -69,7 +69,7 @@
         <item name="android:shadowRadius">7</item>
     </style>
 
-    <!-- For green tip button-->
+    <!-- For calculator green tip button-->
     <style name="Buttons_calculator_Green" parent="android:Theme.Holo">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -86,5 +86,58 @@
         <item name="android:shadowDy">0</item>
         <item name="android:shadowRadius">5</item>
     </style>
+
+
+    <!-- Service great-->
+    <style name="Buttons_service_great" parent="android:Theme.Holo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_gravity">start|end|fill_vertical</item>
+
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#fffdc9</item>
+        <item name="android:shadowColor">#FFFF00</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:background">@drawable/buttonshape_svc_great_selector</item>
+    </style>
+
+    <!-- Service good-->
+    <style name="Buttons_service_good" parent="android:Theme.Holo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_gravity">start|end|fill_vertical</item>
+
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#C9FBFF</item>
+        <item name="android:shadowColor">#4DE7FF</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:background">@drawable/buttonshape_svc_good_selector</item>
+    </style>
+
+    <!-- Service bad-->
+    <style name="Buttons_service_bad" parent="android:Theme.Holo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_gravity">start|end|fill_vertical</item>
+
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#ffc9c9</item>
+        <item name="android:shadowColor">#f90000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:background">@drawable/buttonshape_svc_good_selector</item>
+    </style>
+
 
 </resources>

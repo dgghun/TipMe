@@ -21,5 +21,8 @@
     <string name="str_button_calc_number_x">X</string>
     <string name="str_button_calc_number_$">$</string>
     <string name="str_edittext_custom_toast">Custom Toast</string>
+    <string name="str_button_great">Great</string>
+    <string name="str_button_good">Good</string>
+    <string name="str_button_bad">Bad</string>
 
 </resources>

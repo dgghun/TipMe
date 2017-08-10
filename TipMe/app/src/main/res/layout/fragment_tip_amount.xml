@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.dgg.tipme.MainActivity"
-    >
+
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.dgg.tipme.MainActivity"
+
         android:id="@+id/LinearLayout_howWasService"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
@@ -21,7 +19,7 @@
         <com.dgg.tipme.Typewriter
             android:id="@+id/TextView_howWasService"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:shadowColor="#4DE7FF"
             android:shadowDx="0"
@@ -33,58 +31,170 @@
             android:textSize="30sp"
             />
 
-        <LinearLayout
+        <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_vertical"
+            android:columnCount="2"
+            android:rowCount="3"
+            android:alignmentMode="alignBounds"
             >
 
-        <ImageView
-            android:id="@+id/imageView_badTipHead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:maxHeight="120dp"
-            android:maxWidth="120dp"
-            android:src="@drawable/bothead_bad_1"
-            />
+            <ImageView
+                android:id="@+id/imageView_goldRibbon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:maxHeight="100dp"
+                android:maxWidth="100dp"
+                android:src="@drawable/gold_ribbon"
 
-        <ImageView
-            android:id="@+id/imageView_goodTipHead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:maxHeight="120dp"
-            android:maxWidth="120dp"
-            android:src="@drawable/bothead_good_1"
-            />
+                />
 
-        <ImageView
-            android:id="@+id/imageView_greatTipHead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:maxHeight="120dp"
-            android:maxWidth="120dp"
-            android:src="@drawable/bothead_great_1"
-            />
-        </LinearLayout>
+            <Button
+                style="@style/Buttons_service_great"
+                android:id="@+id/button_great"
+                android:text="@string/str_button_great"
+                android:background="@drawable/buttonshape_svc_great_selector"
+                />
+
+
+            <ImageView
+                android:id="@+id/imageView_thumbsUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:maxHeight="100dp"
+                android:maxWidth="100dp"
+                android:src="@drawable/thumbs_up"
+                />
+
+            <Button
+                style="@style/Buttons_service_good"
+                android:id="@+id/button_good"
+                android:text="@string/str_button_good"
+                android:background="@drawable/buttonshape_svc_good_selector"
+                />
+
+            <ImageView
+                android:id="@+id/imageView_thumbsDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:maxHeight="100dp"
+                android:maxWidth="100dp"
+                android:src="@drawable/thumbs_down"
+                />
+
+            <Button
+                style="@style/Buttons_service_bad"
+                android:id="@+id/button_bad"
+                android:text="@string/str_button_bad"
+                android:background="@drawable/buttonshape_svc_bad_selector"
+                />
+
+        </GridLayout>
 
     </LinearLayout>
 
 
+    <!-- Animation for bot heads layout -->
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<RelativeLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:context="com.dgg.tipme.MainActivity"-->
+    <!--&gt;-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/LinearLayout_howWasService"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--&gt;-->
+
+    <!--<com.dgg.tipme.Typewriter-->
+    <!--android:id="@+id/TextView_howWasService"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:shadowColor="#4DE7FF"-->
+    <!--android:shadowDx="0"-->
+    <!--android:shadowDy="0"-->
+    <!--android:shadowRadius="10"-->
+    <!--android:text="@string/str_textview_how_was_srvc"-->
+    <!--android:textAlignment="center"-->
+    <!--android:textColor="#C9FBFF"-->
+    <!--android:textSize="30sp"-->
+    <!--/>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--&gt;-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imageView_badTipHead"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:maxHeight="120dp"-->
+    <!--android:maxWidth="120dp"-->
+    <!--android:src="@drawable/bothead_great_1"-->
+    <!--/>-->
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imageView_goodTipHead"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:maxHeight="120dp"-->
+    <!--android:maxWidth="120dp"-->
+    <!--android:src="@drawable/bothead_good_1"-->
+    <!--/>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imageView_greatTipHead"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:maxHeight="120dp"-->
+    <!--android:maxWidth="120dp"-->
+    <!--android:src="@drawable/bothead_great_1"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
 
 
 
-</RelativeLayout>
+
+
+    <!--</RelativeLayout>-->

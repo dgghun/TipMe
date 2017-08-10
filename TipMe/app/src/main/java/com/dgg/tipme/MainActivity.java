@@ -11,7 +11,8 @@ public class MainActivity extends SingleFragmentActivity {
     public final static String FRAG_BILL_AMOUNT = "frag_bill_amount";
     public final static String FRAG_TIP_AMOUNT = "frag_tip_amount";
 
-    public static String FRAG_LAST = null;
+    private static String FRAG_LAST = "";
+    private final String END = "end";
 
 
     @Override
@@ -25,13 +26,13 @@ public class MainActivity extends SingleFragmentActivity {
     @Override
     public void onBackPressed(){
 
-        if(FRAG_LAST.equals(null))  // Close app
+        if(FRAG_LAST.equals(END))  // // Back pressed from MainFrag, Close app
             super.onBackPressed();
-        else if(FRAG_LAST.equals(FRAG_MAIN_FRAG)) {
-            FRAG_LAST = null;       //set last to end app
+        else if(FRAG_LAST.equals(FRAG_MAIN_FRAG)) { // Back pressed from BillAmountFrag
+            FRAG_LAST = END;       //set last to end
             replaceFragment(new MainFragment());
         }
-        else if(FRAG_LAST.equals(FRAG_BILL_AMOUNT)) {
+        else if(FRAG_LAST.equals(FRAG_BILL_AMOUNT)) {   // Back pressed from TipAmountFrag
             FRAG_LAST = FRAG_MAIN_FRAG;     //set last to mainFragment
             replaceFragment(new BillAmountFragment());
         }
