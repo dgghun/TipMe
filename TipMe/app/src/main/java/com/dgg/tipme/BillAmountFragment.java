@@ -1,11 +1,8 @@
 package com.dgg.tipme;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +58,8 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
                 if (i == DEL_BTN)
                     mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
                 else if (i == GETTIP_BTN) {
-                    Fragment fragment = new TipAmountFragment();
-                    ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start TipAmountFragment
+                    Fragment fragment = new HowWasSvcFragment();
+                    ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start HowWasSvcFragment
                 } else    // i is a number so append it to current textView string
                     mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
 

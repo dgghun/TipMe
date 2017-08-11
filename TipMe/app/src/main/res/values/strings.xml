@@ -23,6 +23,6 @@
     <string name="str_edittext_custom_toast">Custom Toast</string>
     <string name="str_button_great">Great</string>
     <string name="str_button_good">Good</string>
-    <string name="str_button_bad">Bad</string>
+    <string name="str_button_bad">123456</string>
 
 </resources>
