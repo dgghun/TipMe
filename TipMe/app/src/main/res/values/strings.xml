@@ -8,6 +8,25 @@
     <string name="str_edittext_bill_amount">0.00</string>
     <string name="str_textview_dollar_sign">$</string>
     <string name="str_textview_how_was_srvc">How was the service?</string>
+    
+    <string name="str_textview_bill">Bill</string>
+    <string name="str_textview_split_bill">Split Bill</string>
+    <string name="str_textview_1234567.90">$1234567.90</string>
+    <string name="str_textview_split_digit">1</string>
+    <string name="str_textview_99_percent">99%</string>
+    <string name="str_textview_split">Split</string>
+    <string name="str_textview_tip_perecent">Tip %</string>
+    <string name="str_textview_plus_sign">+</string>
+    <string name="str_textview_minus_sign">-</string>
+    <string name="str_textview_total_per_human">Total Per Human</string>
+    <string name="str_textview_total">Total</string>
+    <string name="str_textview_round_up">Round Up</string>
+    <string name="str_textview_round_down">Round Down</string>
+    <string name="str_textview_calculator">Calculator</string>
+    <string name="str_textview_home">Home</string>
+    <string name="str_textview_quit">Quit</string>
+    <string name="str_textview_tip">Tip</string>
+
     <string name="str_button_calc_number_1">1</string>
     <string name="str_button_calc_number_2">2</string>
     <string name="str_button_calc_number_3">3</string>

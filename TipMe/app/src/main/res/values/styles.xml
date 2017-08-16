@@ -139,5 +139,34 @@
         <item name="android:background">@drawable/buttonshape_svc_good_selector</item>
     </style>
 
+    <!-- fragment_bill_amount_text_views-->
+    <style name="Tip_Totals_Blue" parent="android:Theme.Holo">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">#C9FBFF</item>
+        <item name="android:shadowColor">#4DE7FF</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">10</item>
+    </style>
+    <style name="Tip_Totals_Green" parent="android:Theme.Holo">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">#C8FFB8</item>
+        <item name="android:shadowColor">#08F717</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">10</item>
+    </style>
+    <style name="Tip_Totals_Button_Green" parent="android:Theme.Holo">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#C8FFB8</item>
+        <item name="android:shadowColor">#08F717</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:background">@drawable/buttonshape_calc_selector_green</item>
+    </style>
 
 </resources>

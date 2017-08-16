@@ -1,15 +1,14 @@
 package com.dgg.tipme;
 
-import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.TextView;
 
 public class MainActivity extends SingleFragmentActivity {
 
     public final static String FRAG_MAIN_FRAG = "frag_main";
     public final static String FRAG_BILL_AMOUNT = "frag_bill_amount";
-    public final static String FRAG_TIP_AMOUNT = "frag_tip_amount";
+    public final static String FRAG_HOW_WAS_SVC = "frag_tip_amount";
+    public final static String FRAG_TIP_TOTALS = "frag_tip_totals";
 
     private static String FRAG_LAST = "";
     private final String END = "end";
@@ -32,9 +31,13 @@ public class MainActivity extends SingleFragmentActivity {
             FRAG_LAST = END;       //set last to end
             replaceFragment(new MainFragment());
         }
-        else if(FRAG_LAST.equals(FRAG_BILL_AMOUNT)) {   // Back pressed from TipAmountFrag
+        else if(FRAG_LAST.equals(FRAG_BILL_AMOUNT)) {   // Back pressed from HowWasSvcFrag
             FRAG_LAST = FRAG_MAIN_FRAG;     //set last to mainFragment
             replaceFragment(new BillAmountFragment());
+        }
+        else if(FRAG_LAST.equals(FRAG_HOW_WAS_SVC)){     // Back pressed from TipTotalsFrag
+            FRAG_LAST = FRAG_BILL_AMOUNT;   //set last to BillAmountFrag
+            replaceFragment(new HowWasSvcFragment());
         }
         else super.onBackPressed();
     }

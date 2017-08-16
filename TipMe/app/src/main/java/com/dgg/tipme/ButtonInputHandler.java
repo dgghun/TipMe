@@ -14,7 +14,7 @@ public class ButtonInputHandler {
     private DecimalFormat mDecimalFormat = new DecimalFormat("0.00");
     private double mTotal = 0.00;
     private View mView;
-    public final int MAX_LENGTH = 9;
+    public int MAX_LENGTH = 9;
 
 
     public ButtonInputHandler(View view) {

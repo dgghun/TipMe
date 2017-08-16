@@ -40,7 +40,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstances){
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        getActivity().getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));  //hide icon in acitonbar
+        getActivity().getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));  //hide icon in actionbar
         setUpButtons();
         setUpTipBotImageView();
 
