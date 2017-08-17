@@ -62,17 +62,21 @@ public class HowWasSvcFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v){
         int id = v.getId();
+        Fragment fragment = new TipTotalsFragment();;
 
         if(id == mBtn_great.getId()){
-            Fragment fragment = new TipTotalsFragment();
-            ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_HOW_WAS_SVC);
+
         }
         else if(id == mBtn_good.getId()){
-            Toast.makeText(view.getContext(), "Blue button pressed", Toast.LENGTH_SHORT).show();
+
         }
         else if(id == mBtn_bad.getId()){
-            Toast.makeText(view.getContext(), "Red button pressed", Toast.LENGTH_SHORT).show();
+
         }
+        else fragment = null;
+
+        if(fragment != null)
+            ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_HOW_WAS_SVC);
 
     }
 
