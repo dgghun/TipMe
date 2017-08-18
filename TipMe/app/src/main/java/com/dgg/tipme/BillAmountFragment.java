@@ -48,7 +48,7 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        ButtonInputHandler inputHandler = new ButtonInputHandler(view);
+        CalcButtonInputHandler inputHandler = new CalcButtonInputHandler(view);
 
         //Search for button id pressed
         for (int i = 0; i <= buttonIds.size(); i++) {

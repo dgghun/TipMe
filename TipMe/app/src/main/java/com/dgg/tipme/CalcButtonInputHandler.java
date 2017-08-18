@@ -9,7 +9,7 @@ import android.widget.Toast;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class ButtonInputHandler {
+public class CalcButtonInputHandler {
 
     private DecimalFormat mDecimalFormat = new DecimalFormat("0.00");
     private double mTotal = 0.00;
@@ -17,7 +17,7 @@ public class ButtonInputHandler {
     public int MAX_LENGTH = 9;
 
 
-    public ButtonInputHandler(View view) {
+    public CalcButtonInputHandler(View view) {
         this.mView = view;
     }
 
