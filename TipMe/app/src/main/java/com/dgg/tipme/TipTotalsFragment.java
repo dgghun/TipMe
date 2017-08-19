@@ -24,6 +24,12 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     private final int MAX_PERCENT_TIP = 99;
     private final int MIN_PERCENT_TIP = 0;
 
+    // FOR TESTING
+    String BILL_MAX = "$999,999.99";
+    String BILL_MIN = "$1.00";
+    String BILL_NORMAL = "$145.37";
+
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -44,9 +50,9 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         super.onStart();
 
         //TEMP - DELETE THIS
-        String BILL_MAX = "$999,999.99";
-
         mTxtV_Bill.setText(BILL_MAX);
+        mTxtV_splitBill.setText(BILL_MAX);
+
 
     }
 
@@ -55,9 +61,12 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         int id = v.getId();
 
         if (id == mBtn_splitMinus.getId()) {
-            //TODO - STARTED ON METHOD TO HANDLE THIS
+
+            split_incrementOrDecrement(false, true);  //Decrement the number split by
 
         } else if (id == mBtn_splitPlus.getId()) {
+
+            split_incrementOrDecrement(true, false);  //true is Increment the number split by
 
         } else if (id == mBtn_tipMinus.getId()) {
 
@@ -73,6 +82,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         } else if (id == mBtn_Quit.getId()) {
 
+            getActivity().finish();
         }
     }
 
@@ -115,6 +125,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
     /**
      * reamoveMoneyAndCommaChars(String)
+     *
      * @param str
      * @return
      */
@@ -138,20 +149,46 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
     /**
-     * splitPlusOrMinus(int plusOrMinus)
-     * @param plusOrMinus
+     * split_incrementOrDecrement(boolean increment, boolean decrement)
+     * @param increment
+     * @param decrement
      */
-    public void splitPlusOrMinus(int plusOrMinus){
+    public void split_incrementOrDecrement(boolean increment, boolean decrement) {
 
         //TODO - NEED TO FINISH THIS
         int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
+        String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
-        if(currentSplitNum <= MIN_SPLIT_NUM || currentSplitNum >= MAX_SPLIT_NUM)    // check if the current number is in range
-            Toast.makeText(view.getContext(), "Split between " + MIN_SPLIT_NUM + " and " + MAX_SPLIT_NUM + " humanoids.", Toast.LENGTH_SHORT).show();
-        else
-            mTxtV_splitNum.setText(currentSplitNum - 1);
+        // check if current split num is in range. If so, increment/decrement by passed in integer.
+        if (currentSplitNum <= MIN_SPLIT_NUM && decrement)
+            Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
+        else if (currentSplitNum >= MAX_SPLIT_NUM && increment)
+            Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
+        else {
+
+            boolean noErrors = true; // flag to check if should increment/decrement split count
+            int newSplitCount;
+
+            if(increment)
+                newSplitCount = currentSplitNum + 1;   //increment split count
+            else // decrement
+                newSplitCount = currentSplitNum - 1;   // decrement split count
+
+            Double splitBillAmount = Double.parseDouble(removeMoneyAndCommaChars(mTxtV_splitBill.getText().toString()));    // get current split bill amount
+
+
+            //TODO - Working on how to handle division long remainders. Possibly use an Array cache system.
+            // If no errs increment/decrement split count
+            if(noErrors) {
+                String newSplitDigit = Integer.toString(newSplitCount); // add current num by passed in integer. Save as string
+                mTxtV_splitNum.setText(newSplitDigit);      //set new split by number
+            }
+
+        }
 
     }
+
+
 }
 
 
