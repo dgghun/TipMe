@@ -68,7 +68,9 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         int id = v.getId();
 
         if (id == mBtn_splitMinus.getId()) {
-
+            //incrementSplitDigit()
+            //divideAndUpdateCurrentBill(int spitDigit) // And add current bill to arrayOfBills
+            //calculateNewTip()
             split_incrementOrDecrement(false, true);  //Decrement the number split by
 
         } else if (id == mBtn_splitPlus.getId()) {
