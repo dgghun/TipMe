@@ -2,7 +2,6 @@ package com.dgg.tipme;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Stack;
@@ -35,7 +36,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
    // FOR TESTING
    String BILL_MAX = "$999,999.99";
    String BILL_MIN = "$1.00";
-   String BILL_TEST = "$26.00";
+   String BILL_TEST = "$1.00";
 
 ///  delet me
    @Override
@@ -73,15 +74,15 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
        if (id == mBtn_splitMinus.getId()) {
            // if able to decrement, pop old bill and set bill with it
-           if(decrementSplitDigit() > 0)
+           if(decrementAndUpdateSplitDigit() > 0)
                mTxtV_splitBill.setText(mStackOfBills.pop());
 
        } else if (id == mBtn_splitPlus.getId()) {
-           int newSplitNum = incrementSplitDigit();                        // returns -1 if unable to increment
+           int newSplitNum = incrementAndUpdateSplitDigit();                        // returns -1 if unable to increment
 
            if(newSplitNum > 0) {                                           // check if was able to increment splitDigit
                mStackOfBills.push(mTxtV_splitBill.getText().toString());   // if so, push current bill
-               divideBill(newSplitNum);                             // divide & update current bill
+               divideAndUpdateBill(newSplitNum);                                    // divide & update current bill
          //      updateTip();
            }
 
@@ -165,11 +166,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
    }
 
 
-   /** incrementSplitDigit()
+   /** incrementAndUpdateSplitDigit()
     *
     * @return returns new incremented split digit integer
     */
-   public int incrementSplitDigit(){
+   public int incrementAndUpdateSplitDigit(){
        int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
        String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
@@ -191,11 +192,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     *
     * @return returns if successful in decrementing split digit
     */
-   public int decrementSplitDigit(){
+   public int decrementAndUpdateSplitDigit(){
        int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
        String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
-       // check if current split num is in range. If so, increment/decrement by passed in integer.
+       // check if current split num is in range. If so, decrement.
        if (currentSplitNum <= MIN_SPLIT_NUM) {
            Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
            return -1;      //return unsuccessful
@@ -209,73 +210,20 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
    }
 
 
-   /** divideBill()
+   /** divideAndUpdateBill()
     *
     * @param divisor
     *
     */
-   public void divideBill(int divisor){
+   public void divideAndUpdateBill(int divisor){
+       DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
 
-       String strBill = mTxtV_Bill.getText().toString();                      // get the  bill text
-       Double bill = Double.parseDouble(removeMoneyAndCommaChars(strBill));    // parse bill str to number
-       bill = bill / divisor;                                                  // divide the bill
-       strBill =  Double.toString(bill);                                        // convert new bill number to string
-       strBill = String.format(Locale.US, "%.2f", bill);
-//        strBill = "$" + strBill.substring(0, strBill.indexOf('.') + 3);         // add $ and remove trailing digits
+       String strBill = mTxtV_Bill.getText().toString();                        // get the  bill text
+       Double bill = Double.parseDouble(removeMoneyAndCommaChars(strBill));     // parse bill str to number
+       bill = bill / divisor;                                                   // divide the bill
+       strBill = String.format(Locale.US, "%.2f", bill);                        // round 2 decimal places & convert to str
+       strBill = "$" + formatter.format(Double.parseDouble(strBill));           // format with commas and $ sign
        mTxtV_splitBill.setText(strBill);                                       // set text splitView with new bill amount
-   }
-
-
-   /**
-    * split_incrementOrDecrement(boolean increment, boolean decrement)
-    * @param increment
-    * @param decrement
-    */
-   public void split_incrementOrDecrement(boolean increment, boolean decrement) {
-
-       //TODO - NEED TO FINISH THIS
-       int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
-       String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
-
-       // check if current split num is in range. If so, increment/decrement by passed in integer.
-       if (currentSplitNum <= MIN_SPLIT_NUM && decrement)
-           Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
-       else if (currentSplitNum >= MAX_SPLIT_NUM && increment)
-           Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
-       else {
-
-           int newSplitCount;
-
-           //TODO - Working on this
-           if(increment) {
-               newSplitCount = currentSplitNum + 1;   //increment split count
-               String strBill = mTxtV_splitBill.getText().toString(); // get the current bill text
-
-               mArrayOfBill.add(strBill);  //Add current number to array for recalling when split is decremented
-               Toast.makeText(view.getContext(), mArrayOfBill.toString(), Toast.LENGTH_SHORT).show();
-
-               Double bill = Double.parseDouble(removeMoneyAndCommaChars(strBill)); //parse current Split bill amount to number
-               bill = bill / newSplitCount;    //divide the split bill
-
-               strBill = Double.toString(bill);    //convert new bill number to string
-               strBill = "$" + strBill.substring(0, strBill.indexOf('.') + 3); // add $ and remove trailing digits
-               mTxtV_splitBill.setText(strBill);   //set text splitView
-
-
-               Toast.makeText(view.getContext(), Double.toString(bill), Toast.LENGTH_SHORT).show();
-           }
-           else { // decrement
-               newSplitCount = currentSplitNum - 1;   // decrement split count
-           }
-
-           Double splitBillAmount = Double.parseDouble(removeMoneyAndCommaChars(mTxtV_splitBill.getText().toString()));    // get current split bill amount
-
-
-           //TODO - Working on how to handle division long remainders.
-               String newSplitDigit = Integer.toString(newSplitCount); // add current num by passed in integer. Save as string
-               mTxtV_splitNum.setText(newSplitDigit);      //set new split by number
-       }
-
    }
 
 
