@@ -26,7 +26,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
     private final int MAX_SPLIT_NUM = 100;
     private final int MIN_SPLIT_NUM = 1;
-    private final int MAX_PERCENT_TIP = 99;
+    private final int MAX_PERCENT_TIP = 10;
     private final int MIN_PERCENT_TIP = 0;
     private final String ERR_TIP_LOWER_THAN_ZERO = "err_tipLowerThanZero";
 
@@ -36,7 +36,8 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     // FOR TESTING
     String BILL_MAX = "$999,999.99";
     String BILL_MIN = "$1.00";
-    String BILL_TEST = "$10.11";
+    String BILL_TEST = "$5.11";
+    String TIP_PERCENT_TEST = "15%";
 
     ///  delet me
     @Override
@@ -64,6 +65,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         //TEMP - DELETE THIS
         mTxtV_Bill.setText(BILL_TEST);
         mTxtV_splitBill.setText(BILL_TEST);
+        mTxtV_tipPercent.setText(TIP_PERCENT_TEST);
 
 
     }
@@ -81,11 +83,13 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             }
 
         } else if (id == mBtn_splitPlus.getId()) {
-            String splitBillToSave = mTxtV_splitBill.getText().toString();
-            // If able to increment and update, push new split bill onto stack
+            String splitBillToSave = mTxtV_splitBill.getText().toString(); // get current SplitBill amount
+
+            // If able to increment and update, push "splitBillToSave"  onto stack
            if(incrementSplitDigitAndUpdate()) {
                mStackOfBills.push(splitBillToSave);
-               Toast.makeText(view.getContext(), "Pushed: " + mTxtV_splitBill.getText().toString(), Toast.LENGTH_SHORT).show();
+               updateTip(); // testing phase
+               Toast.makeText(view.getContext(), "Pushed: " + splitBillToSave, Toast.LENGTH_SHORT).show();
            }
 
         } else if (id == mBtn_tipMinus.getId()) {
@@ -180,15 +184,15 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         // Check if current split digit is at max
         if (currentSplitNum >= MAX_SPLIT_NUM) {
             Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
-            return false;   // errs
+            return false;   // err, split digit at max
         }
         else {   // Current split digit is okay so increment
-            int newSpiltDigitInt = currentSplitNum + 1;                     // increment current split digit
+            int newSpiltDigitInt = currentSplitNum + 1;                     // save incremented current split digit to variable
             String strBill = divideBill(newSpiltDigitInt);  //divides bill and returns if no errs
 
-            if(strBill.equals(ERR_TIP_LOWER_THAN_ZERO)) {
+            if(strBill.equals(ERR_TIP_LOWER_THAN_ZERO)) {   //if division err..
                 Toast.makeText(view.getContext(), "Bill can't be split any lower.", Toast.LENGTH_SHORT).show();
-                return false;   // errs
+                return false;   // errs, bill cant be split any lower
             }
             else {
                 String newSplitDigitStr = Integer.toString(newSpiltDigitInt);   // Save as string
@@ -241,6 +245,28 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    /**
+     *
+     */
+    public void updateTip(){
+
+        //TODO working on this
+        try {
+            String tipStr = mTxtV_tipPercent.getText().toString();
+            Double tipPercentDbl = Double.parseDouble(tipStr.substring(0, tipStr.indexOf('%')));
+            Toast.makeText(view.getContext(), Double.toString(tipPercentDbl), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
+     *
+     */
+    public void updateTotal(){
+
+    }
 
 }
 
