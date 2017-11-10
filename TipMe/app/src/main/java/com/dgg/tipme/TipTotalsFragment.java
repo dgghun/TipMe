@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.Stack;
 
 /**
@@ -20,7 +19,7 @@ import java.util.Stack;
 public class TipTotalsFragment extends Fragment implements View.OnClickListener {
 
     private View view;
-    private Button mBtn_splitMinus, mBtn_splitPlus, mBtn_tipMinus, mBtn_tipPlus, mBtn_rndUp, mBtn_rndDown, mBtn_Calc, mBtn_Home, mBtn_Quit;
+    private Button mBtn_splitMinus, mBtn_splitPlus, mBtn_tipPercentMinus, mBtn_tipPercentPlus, mBtn_rndUp, mBtn_rndDown, mBtn_Calc, mBtn_Home, mBtn_Quit;
     private TextView mTxtV_Bill, mTxtV_splitBill, mTxtV_splitNum, mTxtV_tipPercent, mTxtV_tip, mTxtV_total;
 
     private final int MAX_SPLIT_NUM = 100;
@@ -29,7 +28,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     private final int MIN_PERCENT_TIP = 0;
     private final String ERR_TIP_LOWER_THAN_ZERO = "err_tipLowerThanZero";
 
-    private final DecimalFormat decimalFormatter = new DecimalFormat("###,###,##0.00");
+    private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");
 
     private Stack<String> mStackOfBills;
     private Stack<BillInfo> mStackOfBillInfo;
@@ -37,64 +36,39 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     // FOR TESTING
     String BILL_MAX = "$999,999.99";
     String BILL_MIN = "$1.00";
-    String BILL_TEST = "$5.11";
+    String BILL_TEST = "$13.31";
     String TIP_PERCENT_TEST = "15%";
 
     /**
      * Class BillInfo - holds bill info. Used in stack
      */
     class BillInfo{
-        Double splitBillDbl, tipDbl, totalDbl;
-        String splitBillStr, tipStr, totalStr;
+        String splitBill, tip, total;
 
         public BillInfo(){}
 
-        public Double getSplitBillDbl() {
-            return splitBillDbl;
+        public void setSplitBill(String splitBill) {
+            this.splitBill = splitBill;
         }
 
-        public void setSplitBillDbl(Double splitBillDbl) {
-            this.splitBillDbl = splitBillDbl;
+        public void setTip(String tip) {
+            this.tip = tip;
         }
 
-        public Double getTipDbl() {
-            return tipDbl;
+        public void setTotal(String total) {
+            this.total = total;
         }
 
-        public void setTipDbl(Double tipDbl) {
-            this.tipDbl = tipDbl;
+        public String getSplitBill() {
+            return splitBill;
         }
 
-        public Double getTotalDbl() {
-            return totalDbl;
+        public String getTip() {
+            return tip;
         }
 
-        public void setTotalDbl(Double totalDbl) {
-            this.totalDbl = totalDbl;
-        }
-
-        public String getSplitBillStr() {
-            return splitBillStr;
-        }
-
-        public void setSplitBillStr(String splitBillStr) {
-            this.splitBillStr = splitBillStr;
-        }
-
-        public String getTipStr() {
-            return tipStr;
-        }
-
-        public void setTipStr(String tipStr) {
-            this.tipStr = tipStr;
-        }
-
-        public String getTotalStr() {
-            return totalStr;
-        }
-
-        public void setTotalStr(String totalStr) {
-            this.totalStr = totalStr;
+        public String getTotal() {
+            return total;
         }
     }
 
@@ -120,14 +94,13 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     public void onStart() {
         super.onStart();
 
-        //Testing...will change to serialized info from previous fragment.
+        // Set text views
+        // Testing...will change to serialized info from previous fragment.
         mTxtV_Bill.setText(BILL_TEST);
         mTxtV_splitBill.setText(BILL_TEST);
         mTxtV_tipPercent.setText(TIP_PERCENT_TEST);
 
-        Double tipPercentDbl = Double.parseDouble(TIP_PERCENT_TEST.substring(0, TIP_PERCENT_TEST.indexOf('%'))) / 100;
-        Double splitBillDbl = Double.parseDouble(removeMoneyAndCommaChars(BILL_TEST));
-        updateTip(tipPercentDbl,splitBillDbl);
+        updateTipAndTotal(percentStringToDouble(TIP_PERCENT_TEST),moneyStringToDouble(BILL_TEST));
 
     }
 
@@ -137,25 +110,25 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         if (id == mBtn_splitMinus.getId()) {
             // if able to decrement, pop old bill and set bill with it
-            if (decrementSplitDigitAndUpdate() > 0) {
-                String temp = mStackOfBills.pop();
-                mTxtV_splitBill.setText(temp);
-                Toast.makeText(view.getContext(), "Popped: " + temp, Toast.LENGTH_SHORT).show();
-            }
+            int splitCount = Integer.parseInt(mTxtV_splitNum.getText().toString());
+            if(canDecrementSplitCount(splitCount))
+                decrementSplitCountAndUpdate(splitCount);
+
 
         } else if (id == mBtn_splitPlus.getId()) {
-            String splitBillToSave = mTxtV_splitBill.getText().toString(); // get current SplitBill amount before updating
+            // Get current split count and split bill
+            int newSplitCount = Integer.parseInt(mTxtV_splitNum.getText().toString()) + 1;
+            Double billDbl = moneyStringToDouble(mTxtV_Bill.getText().toString());
 
-            // If able to increment and update, push "splitBillToSave"  onto stack
-           if(incrementSplitDigitAndUpdate()) {
+            // Check if you can increment split count,if so,
+            // update bill info and push current bill info onto stack.
+            if (canIncrementSplitCount(newSplitCount, billDbl))
+                incrementSplitCountAndUpdate(newSplitCount, billDbl);
 
-               mStackOfBills.push(splitBillToSave);
-               Toast.makeText(view.getContext(), "Pushed: " + splitBillToSave, Toast.LENGTH_SHORT).show();
-           }
+        } else if (id == mBtn_tipPercentMinus.getId()) {
 
-        } else if (id == mBtn_tipMinus.getId()) {
-
-        } else if (id == mBtn_tipPlus.getId()) {
+            // TODO Start working on this
+        } else if (id == mBtn_tipPercentPlus.getId()) {
 
         } else if (id == mBtn_rndUp.getId()) {
 
@@ -174,14 +147,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
     //**** METHODS ****//
 
-    /**
-     * setUpButtons_TxtViews()
-     */
     private void setUpButtons_TxtViews() {
         mBtn_splitMinus = (Button) view.findViewById(R.id.button_minus_SplitTip);
         mBtn_splitPlus = (Button) view.findViewById(R.id.button_plus_SplitTip);
-        mBtn_tipMinus = (Button) view.findViewById(R.id.button_minus_TipPercent);
-        mBtn_tipPlus = (Button) view.findViewById(R.id.button_plus_TipPercent);
+        mBtn_tipPercentMinus = (Button) view.findViewById(R.id.button_minus_TipPercent);
+        mBtn_tipPercentPlus = (Button) view.findViewById(R.id.button_plus_TipPercent);
         mBtn_rndDown = (Button) view.findViewById(R.id.button_Totals_roundDown);
         mBtn_rndUp = (Button) view.findViewById(R.id.button_Totals_roundUp);
         mBtn_Calc = (Button) view.findViewById(R.id.button_Totals_Calculator);
@@ -190,8 +160,8 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         mBtn_splitMinus.setOnClickListener(this);
         mBtn_splitPlus.setOnClickListener(this);
-        mBtn_tipMinus.setOnClickListener(this);
-        mBtn_tipPlus.setOnClickListener(this);
+        mBtn_tipPercentMinus.setOnClickListener(this);
+        mBtn_tipPercentPlus.setOnClickListener(this);
         mBtn_rndDown.setOnClickListener(this);
         mBtn_rndUp.setOnClickListener(this);
         mBtn_Calc.setOnClickListener(this);
@@ -208,12 +178,28 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    /**
-     * reamoveMoneyAndCommaChars(String)
-     *
-     * @param str
-     * @return
-     */
+
+    public Double percentStringToDouble(String percentStr){
+
+        return Double.parseDouble(TIP_PERCENT_TEST.substring(0, TIP_PERCENT_TEST.indexOf('%'))) / 100;
+    }
+
+
+
+    public Double moneyStringToDouble(String moneyStr){
+
+        return Double.parseDouble(removeMoneyAndCommaChars(moneyStr));
+    }
+
+
+
+    public String doubleToMoneyString(Double doubleNum){
+
+        return "$" + DECIMAL_FORMATTER.format(doubleNum);
+    }
+
+
+
     public String removeMoneyAndCommaChars(String str) {
 
         // Remove money sign
@@ -233,88 +219,87 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    /**
-     * incrementSplitDigitAndUpdate()
-     *
-     * @return returns new incremented split digit integer
-     */
-    public boolean incrementSplitDigitAndUpdate() {
-        int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
+
+    public Boolean canIncrementSplitCount(int splitCount, Double currentBill){
+
         String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
         // Check if current split digit is at max
-        if (currentSplitNum >= MAX_SPLIT_NUM) {
+        if (splitCount >= MAX_SPLIT_NUM) {
             Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
             return false;   // err, split digit at max
         }
-        else {   // Current split digit is okay so increment
-            int newSpiltDigitInt = currentSplitNum + 1;                     // save incremented current split digit to variable
-            Double billDbl = divideBill(newSpiltDigitInt);  //divides bill and returns if no errs
 
-            if(billDbl <= 0.00) {   //if err..
-                Toast.makeText(view.getContext(), "Bill can't be split any lower.", Toast.LENGTH_SHORT).show();
-                return false;   // err, bill cant be split any lower
-            }
-            else {
-                //TODO Probably need to push onto stack here instead of after this method
-                String newSplitDigitStr = Integer.toString(newSpiltDigitInt);   // Save as string
-                String billDblStr = "$" + decimalFormatter.format(billDbl);   // Save as string
-                mTxtV_splitNum.setText(newSplitDigitStr);                       //set new split digit
-                mTxtV_splitBill.setText(billDblStr);   //Set new split bill amount
-                return true;    // no errs
-            }
+        // Check if divided bill doesn't cross minimum amount
+        if( divideBill(splitCount, currentBill) <  moneyStringToDouble(BILL_MIN)) {
+            Toast.makeText(view.getContext(), "Can not split any lower.", Toast.LENGTH_SHORT).show();
+            return false;
         }
+
+        return true;
     }
 
 
-    /**
-     * @return returns if successful in decrementing split digit
-     */
-    public int decrementSplitDigitAndUpdate() {
-        int currentSplitNum = Integer.parseInt(mTxtV_splitNum.getText().toString());    // get the current split digit
-        String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
-        // check if current split num is in range. If so, decrement.
-        if (currentSplitNum <= MIN_SPLIT_NUM) {
-            Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
-            return -1;      //return unsuccessful
-        } else {
-            int newSpiltDigitInt = currentSplitNum - 1;                     // decrement split digit
-            String newSplitDigitStr = Integer.toString(newSpiltDigitInt);   // Save as string
-            mTxtV_splitNum.setText(newSplitDigitStr);                       //set new split digit
-            return 1;                                                       // return successful
-        }
+    public void incrementSplitCountAndUpdate(int newSplitCount, Double billDbl){
+        Double newSplitBillDbl = divideBill(newSplitCount, billDbl);    //calculate new split bill
+        String newSplitBillStr =  doubleToMoneyString(newSplitBillDbl);
+        String newSplitCountStr = Integer.toString(newSplitCount);
+
+        // Save current bill info and push to stack
+        BillInfo currentBillInfo = new BillInfo();
+        currentBillInfo.setSplitBill(mTxtV_splitBill.getText().toString());
+        currentBillInfo.setTip(mTxtV_tip.getText().toString());
+        currentBillInfo.setTotal(mTxtV_total.getText().toString());
+        mStackOfBillInfo.push(currentBillInfo);
+
+        // Update Text Views with new bill info
+        mTxtV_splitNum.setText(newSplitCountStr);
+        mTxtV_splitBill.setText(newSplitBillStr);
+        updateTipAndTotal(percentStringToDouble(mTxtV_tipPercent.getText().toString()), newSplitBillDbl);
     }
 
 
-    /**
-     * divideBill()
-     *
-     * @param divisor
-     */
-    public Double divideBill(int divisor) {
-        String strBill = mTxtV_Bill.getText().toString();                        // get the  bill text
-        Double bill = Double.parseDouble(removeMoneyAndCommaChars(strBill));     // parse bill str to number
-        bill = bill / divisor;                                                   // divide the bill
 
-        if(bill < 1.00)
-            return 0.00;
-        else {
-            return bill;
+    public Boolean canDecrementSplitCount(int splitCount){
+        if(splitCount <= MIN_SPLIT_NUM){
+            Toast.makeText(view.getContext(), "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".", Toast.LENGTH_SHORT).show();
+            return false;
         }
+        return true;
     }
 
-    /**
-     *
-     */
-    public void updateTip(Double tipPercent, Double bill){
 
-        //TODO working on this
+
+    public void decrementSplitCountAndUpdate(int splitCount){
+
+        // decrement and update split count info
+        String newSplitCountStr = Integer.toString(splitCount - 1);
+        mTxtV_splitNum.setText(newSplitCountStr);
+
+        //Set text views with previous bill info and pop off stack
+        mTxtV_splitBill.setText(mStackOfBillInfo.peek().getSplitBill());
+        mTxtV_tip.setText(mStackOfBillInfo.peek().getTip());
+        mTxtV_total.setText(mStackOfBillInfo.peek().getTotal());
+        mStackOfBillInfo.pop();
+    }
+
+
+
+    public Double divideBill(int divisor, Double bill){
+
+        return bill / (double) divisor;
+    }
+
+
+
+    public void updateTipAndTotal(Double tipPercent, Double bill){
+
         try {
             Double tipDbl =  bill * tipPercent;
             Double newBillTotalDbl = bill + tipDbl;
-            String tipStr = "$" + decimalFormatter.format(tipDbl);
-            String billTotalStr = "$" + decimalFormatter.format(newBillTotalDbl);
+            String tipStr = "$" + DECIMAL_FORMATTER.format(tipDbl);
+            String billTotalStr = "$" + DECIMAL_FORMATTER.format(newBillTotalDbl);
 
             mTxtV_tip.setText(tipStr);
             mTxtV_total.setText(billTotalStr);
@@ -322,15 +307,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    /**
-     *
-     */
-    public void updateTotal(){
-
-    }
-
 }
 
 

@@ -16,7 +16,8 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new MainFragment();
+//        return new MainFragment();
+        return new TipTotalsFragment(); // TESTING!!!!!!!!!!!!!!!! Delete this when done!!
     }
 
     //Handles back press navigation flags. Was having issues w/ onclick working when
