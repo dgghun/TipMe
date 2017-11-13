@@ -307,6 +307,31 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+    public void updateTipTotalAndSplitBill(Double tipPercent, Double bill, int splitCount){
+
+        try {
+            // Calculate splitBill, tip and total amounts
+            Double splitBill = bill / (double) splitCount;  //Get how much split bill is (bill per person)
+            Double tipDbl =  splitBill * tipPercent;        //Get how much tip is of split bill (per person)
+            Double billTotalDbl = splitBill + tipDbl;    //Get how much total is per person
+
+            //Convert doubles to strings with dollar signs
+            String splitBillStr = doubleToMoneyString(splitBill);
+            String tipStr = doubleToMoneyString(tipDbl);
+            String billTotalStr = doubleToMoneyString(billTotalDbl);
+
+            // Update text views with new info
+            mTxtV_splitBill.setText(splitBillStr);
+            mTxtV_tip.setText(tipStr);
+            mTxtV_total.setText(billTotalStr);
+
+        } catch (Exception e) {
+            Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 }
 
 
