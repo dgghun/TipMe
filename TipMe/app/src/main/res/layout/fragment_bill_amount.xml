@@ -164,7 +164,7 @@
         <Button
             style="@style/Buttons_calculator_Green"
             android:id="@+id/button_calcNumber_$"
-            android:text="@string/str_button_calc_number_$"
+            android:text="@string/str_button_calc_number_MoneySign"
             />
     </GridLayout>
 
