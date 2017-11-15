@@ -65,13 +65,18 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
                 if (i == DEL_BTN)
                     mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
                 else if (i == GETTIP_BTN) {
-                    if(mEditTxt_billInput.getText().toString().equals("0.00"))
+                    String currentInput = mEditTxt_billInput.getText().toString();
+
+                    if(currentInput.equals("0.00"))
                         Toast.makeText(view.getContext(), "Enter bill amount to continue.", Toast.LENGTH_SHORT).show();
+                    else if(Double.parseDouble(currentInput) < 1.0)
+                        Toast.makeText(view.getContext(), "Bill must be $1.00 or more.", Toast.LENGTH_SHORT).show();
                     else {
                         MainActivity.Users_Bill = mEditTxt_billInput.getText().toString();  // Set users bill in activity to access in TipTotalsFragment
                         Fragment fragment = new HowWasSvcFragment();
                         ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start HowWasSvcFragment
                     }
+
                 } else    // i is a number so append it to current textView string
                     mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
 

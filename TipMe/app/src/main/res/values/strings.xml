@@ -10,7 +10,7 @@
     <string name="str_textview_how_was_srvc">How was the service?</string>
     
     <string name="str_textview_bill">Bill</string>
-    <string name="str_textview_split_bill">Split Bill</string>
+    <string name="str_textview_split_bill">Bill</string>
     <string name="str_textview_1234567.90">$1234567.90</string>
     <string name="str_textview_split_digit">1</string>
     <string name="str_textview_99_percent">99%</string>

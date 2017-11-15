@@ -333,8 +333,12 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             Double bill = moneyStringToDouble(mTxtV_Bill.getText().toString()); // Get bill
             Double splitBill = bill / (double) splitCount;  //Get how much split bill is (bill per person)
             Double tipDbl;
-            if(tipPercent.equals(MIN_PERCENT_TIP)) tipDbl = MIN_PERCENT_TIP;           // If tip is 0%, no tip.
-            else tipDbl  =  splitBill * tipPercent;         //Get how much tip is of split bill (per person)
+
+            if(tipPercent.equals(MIN_PERCENT_TIP))
+                tipDbl = MIN_PERCENT_TIP;           // If tip is 0%, no tip.
+            else
+                tipDbl  =  splitBill * tipPercent;         //Get how much tip is of split bill (per person)
+
             Double billTotalDbl = splitBill + tipDbl;    //Get how much total is per person
 
 
