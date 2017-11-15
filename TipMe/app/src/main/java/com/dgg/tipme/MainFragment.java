@@ -4,6 +4,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,9 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        FragmentManager fm = getFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);    // Clear back stack of fragments.
+
         setUpTextViewHeader();                          // Animates header
         animateDrawable_TipBotBlink.start();    // Animate tipbot blinking
 
@@ -78,6 +82,8 @@ public class MainFragment extends Fragment {
                 //Fragment transaction - get bill amount
                 Fragment fragment = new BillAmountFragment();
                 ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_MAIN_FRAG);
+
+
             }
         });
 

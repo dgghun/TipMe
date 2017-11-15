@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
     private EditText mEditTxt_billInput;
     private Typewriter mWriter_header;   //Custom class to animate textView text like a "type writer"
     private final int DEL_BTN = 10, GETTIP_BTN = 11;
-    private final List<Integer> buttonIds = new ArrayList<>();
-    private final List<Button> buttons = new ArrayList<>();
+    private  List<Integer> buttonIds;
+    private  List<Button> buttons;
 
 
     @Override
@@ -46,6 +47,12 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setUpButtons();
+    }
+
+    @Override
     public void onClick(View v) {
         int id = v.getId();
         CalcButtonInputHandler inputHandler = new CalcButtonInputHandler(view);
@@ -58,8 +65,13 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
                 if (i == DEL_BTN)
                     mEditTxt_billInput.setText(inputHandler.delete(mEditTxt_billInput.getText().toString()));
                 else if (i == GETTIP_BTN) {
-                    Fragment fragment = new HowWasSvcFragment();
-                    ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start HowWasSvcFragment
+                    if(mEditTxt_billInput.getText().toString().equals("0.00"))
+                        Toast.makeText(view.getContext(), "Enter bill amount to continue.", Toast.LENGTH_SHORT).show();
+                    else {
+                        MainActivity.Users_Bill = mEditTxt_billInput.getText().toString();  // Set users bill in activity to access in TipTotalsFragment
+                        Fragment fragment = new HowWasSvcFragment();
+                        ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_BILL_AMOUNT); // Start HowWasSvcFragment
+                    }
                 } else    // i is a number so append it to current textView string
                     mEditTxt_billInput.setText(inputHandler.append(Integer.toString(i), mEditTxt_billInput.getText().toString()));
 
@@ -76,6 +88,8 @@ public class BillAmountFragment extends Fragment implements View.OnClickListener
      * setUpButtons
      */
     public void setUpButtons() {
+        buttonIds = new ArrayList<>();
+        buttons = new ArrayList<>();
 
         int mNumberOfButtons = 11;
         // Set button ids, button views and click listener

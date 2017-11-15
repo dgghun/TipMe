@@ -2,6 +2,7 @@ package com.dgg.tipme;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,51 +25,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     private final int MIN_SPLIT_NUM = 1;
     private final Double MAX_PERCENT_TIP = 0.99;
     private final Double MIN_PERCENT_TIP = 0.00;
-    private final String ERR_TIP_LOWER_THAN_ZERO = "err_tipLowerThanZero";
+    private final String BILL_MAX = "$999,999.99";
+    private final String BILL_MIN = "$1.00";
 
     private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");
 
-    private Stack<String> mStackOfBills;
-    private Stack<BillInfo> mStackOfBillInfo;
-
-    // FOR TESTING
-    String BILL_MAX = "$999,999.99";
-    String BILL_MIN = "$1.00";
-    String BILL_TEST = "$13.31";
-    String TIP_PERCENT_TEST = "15%";
-
-    /**
-     * Class BillInfo - holds bill info. Used in stack
-     */
-    class BillInfo{
-        String splitBill, tip, total;
-
-        public BillInfo(){}
-
-        public void setSplitBill(String splitBill) {
-            this.splitBill = splitBill;
-        }
-
-        public void setTip(String tip) {
-            this.tip = tip;
-        }
-
-        public void setTotal(String total) {
-            this.total = total;
-        }
-
-        public String getSplitBill() {
-            return splitBill;
-        }
-
-        public String getTip() {
-            return tip;
-        }
-
-        public String getTotal() {
-            return total;
-        }
-    }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -81,10 +42,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         setUpButtons_TxtViews();
 
-        //Set up array of bill calculations
-        mStackOfBills = new Stack<>();
-        mStackOfBillInfo = new Stack<>();
-
         return view;
     }
 
@@ -93,12 +50,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         super.onStart();
 
         // Set text views
-        // Testing...will change to serialized info from previous fragment.
-        mTxtV_Bill.setText(BILL_TEST);
-        mTxtV_splitBill.setText(BILL_TEST);
-        mTxtV_tipPercent.setText(TIP_PERCENT_TEST);
+        mTxtV_Bill.setText(doubleToMoneyString(Double.parseDouble(MainActivity.Users_Bill)));
+        mTxtV_splitBill.setText(MainActivity.Users_Bill);
+        mTxtV_tipPercent.setText(MainActivity.Users_Service);
 
-        updateTipTotalAndSplitBill(percentStringToDouble(TIP_PERCENT_TEST), 1); //initial split is 1
+        updateTipTotalAndSplitBill(percentStringToDouble(MainActivity.Users_Service), 1); //initial split is 1
 
     }
 
@@ -147,12 +103,36 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             }
 
         } else if (id == mBtn_rndUp.getId()) {
+            final Double ONE_DOLLAR = 1.00;
+
+            if(canRoundTipUpOrDown(ONE_DOLLAR)) {
+                Double splitBill = moneyStringToDouble(mTxtV_splitBill.getText().toString());
+                Double newTip = getRoundedTip(ONE_DOLLAR);
+
+                mTxtV_tip.setText(doubleToMoneyString(newTip));
+                mTxtV_total.setText(doubleToMoneyString(splitBill + newTip));
+
+            }
 
         } else if (id == mBtn_rndDown.getId()) {
+            final Double NEGATIVE_ONE_DOLLAR = -1.00;
+
+            if(canRoundTipUpOrDown(NEGATIVE_ONE_DOLLAR)) {
+                Double splitBill = moneyStringToDouble(mTxtV_splitBill.getText().toString());
+                Double newTip = getRoundedTip(NEGATIVE_ONE_DOLLAR);
+
+                mTxtV_tip.setText(doubleToMoneyString(newTip));
+                mTxtV_total.setText(doubleToMoneyString(splitBill + newTip));
+
+            }
 
         } else if (id == mBtn_Calc.getId()) {
 
+            Toast.makeText(view.getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+
         } else if (id == mBtn_Home.getId()) {
+            Fragment fragment = new MainFragment();
+            ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_TIP_TOTALS); // Start HowWasSvcFragment
 
         } else if (id == mBtn_Quit.getId()) {
 
@@ -215,13 +195,14 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
+
     public String doubleToPercentString(Double doubleNum){
         DecimalFormat decimalFormat = new DecimalFormat("00.00");
         String temp = decimalFormat.format(doubleNum * 100);
-//        String temp = String.format(Locale.US, "%.2f", (doubleNum * 100));  // Formats double two decimal places
 
         return temp.substring(0, temp.indexOf('.')) + "%";
     }
+
 
 
     public String removeMoneyAndCommaChars(String str) {
@@ -287,6 +268,57 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         else return true;
     }
 
+
+
+    public Boolean canRoundTipUpOrDown(Double numToRoundBy){
+        final Double MIN_TIP_AMOUNT = 0.00;
+        final Double CURRENT_TIP = moneyStringToDouble(mTxtV_tip.getText().toString());
+
+        // If rounding down and current tip is just cents.
+        if(CURRENT_TIP > 0.0 && CURRENT_TIP < 1.0 && numToRoundBy < 1.00 )
+            return true;
+
+        if(CURRENT_TIP + numToRoundBy > moneyStringToDouble(BILL_MAX)){
+            Toast.makeText(view.getContext(), "Can't round any higher.", Toast.LENGTH_SHORT).show();
+            return  false;
+        }
+        else if (CURRENT_TIP + numToRoundBy < MIN_TIP_AMOUNT){
+            Toast.makeText(view.getContext(), "Can't round any lower.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else return true;
+
+    }
+
+
+
+    public Double getRoundedTip(Double numToRoundBy){
+        final Double ONE_DOLLAR = 1.00;
+        String currentTipStr = mTxtV_tip.getText().toString();
+        Double currentTipDbl = moneyStringToDouble(currentTipStr);
+        Double newTip;
+
+        // If the current tip has cents, round to nearest dollar
+        if(!currentTipStr.endsWith(".00")){
+            currentTipStr = currentTipStr.substring(0, currentTipStr.length()-3) + ".00";   //remove cents from current tip
+
+            if(numToRoundBy >= ONE_DOLLAR)
+                newTip = moneyStringToDouble(currentTipStr) + ONE_DOLLAR; //If rounding up, round up by 1
+             else
+                newTip = moneyStringToDouble(currentTipStr);    // Else must be rounding down to nearest dollar
+        } else{
+            // Current tip has no cents so round up or down by one dollar
+            if(numToRoundBy >= ONE_DOLLAR)
+                newTip = currentTipDbl + ONE_DOLLAR; //If rounding up, round up by 1
+            else
+                newTip = currentTipDbl - ONE_DOLLAR;    // Else must be rounding down to nearest dollar
+        }
+
+        return newTip;
+    }
+
+
+
     public Double divideBill(int divisor, Double bill){
 
         return bill / (double) divisor;
@@ -320,6 +352,9 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
 }
 
 

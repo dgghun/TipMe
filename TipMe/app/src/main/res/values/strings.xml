@@ -20,8 +20,8 @@
     <string name="str_textview_minus_sign">-</string>
     <string name="str_textview_total_per_human">Total Per Human</string>
     <string name="str_textview_total">Total</string>
-    <string name="str_textview_round_up">Round Up</string>
-    <string name="str_textview_round_down">Round Down</string>
+    <string name="str_textview_round_up">Round Tip Up</string>
+    <string name="str_textview_round_down">Round Tip Down</string>
     <string name="str_textview_calculator">Calculator</string>
     <string name="str_textview_home">Home</string>
     <string name="str_textview_quit">Quit</string>

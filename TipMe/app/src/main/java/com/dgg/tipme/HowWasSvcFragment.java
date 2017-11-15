@@ -62,18 +62,21 @@ public class HowWasSvcFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v){
         int id = v.getId();
-        Fragment fragment = new TipTotalsFragment();;
+        Fragment fragment = new TipTotalsFragment();
+        String service = "";
 
         if(id == mBtn_great.getId()){
-
+            service = "20%";
         }
         else if(id == mBtn_good.getId()){
-
+            service = "15%";
         }
         else if(id == mBtn_bad.getId()){
-
+            service = "5%";
         }
         else fragment = null;
+
+        MainActivity.Users_Service = service;
 
         if(fragment != null)
             ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_HOW_WAS_SVC);
