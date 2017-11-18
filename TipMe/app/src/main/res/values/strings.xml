@@ -9,7 +9,7 @@
     <string name="str_textview_dollar_sign">$</string>
     <string name="str_textview_how_was_srvc">How was the service?</string>
     
-    <string name="str_textview_bill">Bill</string>
+    <string name="str_textview_bill">Original Bill</string>
     <string name="str_textview_split_bill">Bill</string>
     <string name="str_textview_1234567.90">$1234567.90</string>
     <string name="str_textview_split_digit">1</string>
@@ -37,8 +37,8 @@
     <string name="str_button_calc_number_8">8</string>
     <string name="str_button_calc_number_9">9</string>
     <string name="str_button_calc_number_0">0</string>
-    <string name="str_button_calc_number_x">X</string>
-    <string name="str_button_calc_number_MoneySign">$</string>
+    <string name="str_button_calc_number_x">DEL</string>
+    <string name="str_button_calc_number_MoneySign">TIP</string>
     <string name="str_edittext_custom_toast">Custom Toast</string>
     <string name="str_button_great">Great</string>
     <string name="str_button_good">Good</string>

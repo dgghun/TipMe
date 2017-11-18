@@ -20,7 +20,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">6dp</item>
         <item name="android:layout_marginBottom">6dp</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">30sp</item>
 
         <item name="android:textColor">#C9FBFF</item>
         <item name="android:background">@drawable/buttonshape_selector</item>
@@ -60,7 +60,7 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_marginBottom">5dp</item>
 
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:textColor">#FFB3AD</item>
         <item name="android:background">@drawable/buttonshape_calc_selector_red</item>
         <item name="android:shadowColor">#FF0000</item>
@@ -78,7 +78,7 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_marginBottom">5dp</item>
 
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:textColor">#C8FFB8</item>
         <item name="android:background">@drawable/buttonshape_calc_selector_green</item>
         <item name="android:shadowColor">#08F717</item>

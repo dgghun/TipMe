@@ -2,7 +2,6 @@ package com.dgg.tipme;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
-import java.util.Stack;
 
 
 public class TipTotalsFragment extends Fragment implements View.OnClickListener {
 
     private View view;
-    private Button mBtn_splitMinus, mBtn_splitPlus, mBtn_tipPercentMinus, mBtn_tipPercentPlus, mBtn_rndUp, mBtn_rndDown, mBtn_Calc, mBtn_Home, mBtn_Quit;
+    private Button mBtn_splitMinus, mBtn_splitPlus, mBtn_tipPercentMinus, mBtn_tipPercentPlus, mBtn_rndUp, mBtn_rndDown, mBtn_Calc, mBtn_Home;
     private TextView mTxtV_Bill, mTxtV_splitBill, mTxtV_splitCount, mTxtV_tipPercent, mTxtV_tip, mTxtV_total;
+    private TextView mTxtV_totalPerHuman;
 
     private final int MAX_SPLIT_NUM = 100;
     private final int MIN_SPLIT_NUM = 1;
@@ -27,6 +25,9 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     private final Double MIN_PERCENT_TIP = 0.00;
     private final String BILL_MAX = "$999,999.99";
     private final String BILL_MIN = "$1.00";
+    private final String TOTAL = "Total";
+    private final String TOTAL_PER_HUMAN = "Total Per Human";
+
 
     private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");
 
@@ -134,9 +135,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             Fragment fragment = new MainFragment();
             ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_TIP_TOTALS); // Start HowWasSvcFragment
 
-        } else if (id == mBtn_Quit.getId()) {
-
-            getActivity().finish();
         }
     }
 
@@ -152,7 +150,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mBtn_rndUp = (Button) view.findViewById(R.id.button_Totals_roundUp);
         mBtn_Calc = (Button) view.findViewById(R.id.button_Totals_Calculator);
         mBtn_Home = (Button) view.findViewById(R.id.button_Totals_Home);
-        mBtn_Quit = (Button) view.findViewById(R.id.button_Totals_Quit);
 
         mBtn_splitMinus.setOnClickListener(this);
         mBtn_splitPlus.setOnClickListener(this);
@@ -162,7 +159,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mBtn_rndUp.setOnClickListener(this);
         mBtn_Calc.setOnClickListener(this);
         mBtn_Home.setOnClickListener(this);
-        mBtn_Quit.setOnClickListener(this);
 
         mTxtV_Bill = (TextView) view.findViewById(R.id.textView_Bill_Digits);
         mTxtV_splitBill = (TextView) view.findViewById(R.id.textView_SplitBill_Digits);
@@ -170,6 +166,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mTxtV_tipPercent = (TextView) view.findViewById(R.id.textView_TipPecent_Digit);
         mTxtV_tip = (TextView) view.findViewById(R.id.textView_Tip_Digits);
         mTxtV_total = (TextView) view.findViewById(R.id.textView_Total_Digits);
+        mTxtV_totalPerHuman = (TextView)view.findViewById(R.id.textview_TotalPerHuman);
 
     }
 
@@ -200,6 +197,8 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         DecimalFormat decimalFormat = new DecimalFormat("00.00");
         String temp = decimalFormat.format(doubleNum * 100);
 
+        if(doubleNum * 100 >= 0 && doubleNum * 100 < 10)
+            return temp.substring(1, temp.indexOf('.')) + "%";
         return temp.substring(0, temp.indexOf('.')) + "%";
     }
 
@@ -351,6 +350,23 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             mTxtV_splitBill.setText(splitBillStr);
             mTxtV_tip.setText(tipStr);
             mTxtV_total.setText(billTotalStr);
+
+            //Check if Tip + Bill = Total. If not fix this.
+            //Had issues with rounding properly with 0.99 cents
+            splitBillStr = mTxtV_splitBill.getText().toString();
+            tipStr = mTxtV_tip.getText().toString();
+            billTotalStr = mTxtV_total.getText().toString();
+            if(moneyStringToDouble(splitBillStr) + moneyStringToDouble(tipStr) != moneyStringToDouble(billTotalStr))
+                mTxtV_total.setText(doubleToMoneyString(moneyStringToDouble(splitBillStr) + moneyStringToDouble(tipStr)));
+
+            //Check how split count and set Totals text view accordingly
+            if(Integer.parseInt(mTxtV_splitCount.getText().toString()) > 1)
+                mTxtV_totalPerHuman.setText(TOTAL_PER_HUMAN);
+            else
+                mTxtV_totalPerHuman.setText(TOTAL);
+
+
+
 
         } catch (Exception e) {
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
