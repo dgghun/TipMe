@@ -18,7 +18,8 @@
     <string name="str_textview_tip_perecent">Tip %</string>
     <string name="str_textview_plus_sign">+</string>
     <string name="str_textview_minus_sign">-</string>
-    <string name="str_textview_total_per_human">Total Per Human</string>
+    <string name="str_textview_total_per_human">Each Human Pays</string>
+    <string name="str_textview_total_you_pay">You Pay</string>
     <string name="str_textview_total">Total</string>
     <string name="str_textview_round_up">Round Tip Up</string>
     <string name="str_textview_round_down">Round Tip Down</string>

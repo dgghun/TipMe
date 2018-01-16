@@ -1,7 +1,10 @@
 package com.dgg.tipme;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +19,23 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
     private View view;
     private Button mBtn_splitMinus, mBtn_splitPlus, mBtn_tipPercentMinus, mBtn_tipPercentPlus, mBtn_rndUp, mBtn_rndDown, mBtn_Calc, mBtn_Home;
-    private TextView mTxtV_Bill, mTxtV_splitBill, mTxtV_splitCount, mTxtV_tipPercent, mTxtV_tip, mTxtV_total;
+    private TextView  mTxtV_splitBill, mTxtV_splitCount, mTxtV_tipPercent, mTxtV_tip, mTxtV_total;
     private TextView mTxtV_totalPerHuman;
 
-    private final int MAX_SPLIT_NUM = 100;
+    private final int MAX_SPLIT_NUM = 99;
     private final int MIN_SPLIT_NUM = 1;
     private final Double MAX_PERCENT_TIP = 0.99;
     private final Double MIN_PERCENT_TIP = 0.00;
     private final String BILL_MAX = "$999,999.99";
     private final String BILL_MIN = "$1.00";
     private final String TOTAL = "Total";
-    private final String TOTAL_PER_HUMAN = "Total Per Human";
+    private final String YOU_PAY = "You Pay";
+    private final String TOTAL_PER_HUMAN = "Each Human Pays";
 
 
     private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");
 
+    private Typewriter mTypeWriter;   //Custom class to animate textView text like a "type writer"
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -51,7 +56,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         super.onStart();
 
         // Set text views
-        mTxtV_Bill.setText(doubleToMoneyString(Double.parseDouble(MainActivity.Users_Bill)));
         mTxtV_splitBill.setText(MainActivity.Users_Bill);
         mTxtV_tipPercent.setText(MainActivity.Users_Service);
 
@@ -160,13 +164,20 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mBtn_Calc.setOnClickListener(this);
         mBtn_Home.setOnClickListener(this);
 
-        mTxtV_Bill = (TextView) view.findViewById(R.id.textView_Bill_Digits);
         mTxtV_splitBill = (TextView) view.findViewById(R.id.textView_SplitBill_Digits);
         mTxtV_splitCount = (TextView) view.findViewById(R.id.textView_Split_Digit);
         mTxtV_tipPercent = (TextView) view.findViewById(R.id.textView_TipPecent_Digit);
         mTxtV_tip = (TextView) view.findViewById(R.id.textView_Tip_Digits);
         mTxtV_total = (TextView) view.findViewById(R.id.textView_Total_Digits);
+
+        //Set up type writer and type face for Total Per Human text
         mTxtV_totalPerHuman = (TextView)view.findViewById(R.id.textview_TotalPerHuman);
+//        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGIB.TTF");
+//        mTxtV_totalPerHuman.setTypeface(typeface);
+//        mTxtV_totalPerHuman.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+//        mTypeWriter = (Typewriter) mTxtV_totalPerHuman;
+//        mTypeWriter.setCharacterDelay(50);
+
 
     }
 
@@ -235,7 +246,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         }
 
         // Check if divided bill doesn't cross minimum amount
-        if( divideBill(splitCount, moneyStringToDouble(mTxtV_Bill.getText().toString())) <  moneyStringToDouble(BILL_MIN)) {
+        if( divideBill(splitCount, moneyStringToDouble(MainActivity.Users_Bill)) <  moneyStringToDouble(BILL_MIN)) {
             Toast.makeText(view.getContext(), "Can not split any lower.", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -329,7 +340,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         try {
             // Calculate splitBill, tip and total amounts
-            Double bill = moneyStringToDouble(mTxtV_Bill.getText().toString()); // Get bill
+            Double bill = moneyStringToDouble(MainActivity.Users_Bill); // Get bill
             Double splitBill = bill / (double) splitCount;  //Get how much split bill is (bill per person)
             Double tipDbl;
 
@@ -360,16 +371,23 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
                 mTxtV_total.setText(doubleToMoneyString(moneyStringToDouble(splitBillStr) + moneyStringToDouble(tipStr)));
 
             //Check how split count and set Totals text view accordingly
-            if(Integer.parseInt(mTxtV_splitCount.getText().toString()) > 1)
-                mTxtV_totalPerHuman.setText(TOTAL_PER_HUMAN);
-            else
-                mTxtV_totalPerHuman.setText(TOTAL);
+            if(Integer.parseInt(mTxtV_splitCount.getText().toString()) > 1) {
+                if(!mTxtV_totalPerHuman.getText().toString().equals(TOTAL_PER_HUMAN))
+//                    mTypeWriter.animateText(TOTAL_PER_HUMAN, false);
+                    mTxtV_totalPerHuman.setText(TOTAL_PER_HUMAN);
+            }
+            else {
+                if(!mTxtV_totalPerHuman.equals(YOU_PAY))
+//                    mTypeWriter.animateText(YOU_PAY, false);
+                    mTxtV_totalPerHuman.setText(YOU_PAY);
+            }
 
 
 
 
         } catch (Exception e) {
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("ERROR", e.getLocalizedMessage());
         }
     }
 
