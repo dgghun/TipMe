@@ -1,10 +1,9 @@
 package com.dgg.tipme;
 
-import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +61,49 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         updateTipTotalAndSplitBill(percentStringToDouble(MainActivity.Users_Service), 1); //initial split is 1
 
     }
+
+
+
+    private class MyTask extends AsyncTask<String, Void, String>{
+
+        int sleepCount = 1;
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try{
+                while(mBtn_splitMinus.isPressed()){
+
+                    if(sleepCount <= 2) Thread.sleep(350);
+                    else if(sleepCount <= 5) Thread.sleep(250);
+                    else if(sleepCount <= 10) Thread.sleep(100);
+                    else Thread.sleep(50);
+                    sleepCount++;
+                    publishProgress();
+                }
+
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        //Runs on UI thread after publishProgress() is called in doInBackground()
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+            mTxtV_splitCount.setText(Integer.toString(sleepCount));
+        }
+
+        // Runs on UI thread when doInBackground() is done.
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Toast.makeText(view.getContext(), "Thread DONE", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -143,6 +185,24 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
+
+    // Handles long press
+    View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            final int id = v.getId();
+
+            if(mBtn_splitMinus.isPressed()){
+                Toast.makeText(view.getContext(), " Thread START", Toast.LENGTH_SHORT).show();
+                new MyTask().execute();
+
+            }
+
+
+            return true;
+        }
+    };
+
     //**** METHODS ****//
 
     private void setUpButtons_TxtViews() {
@@ -164,6 +224,11 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mBtn_Calc.setOnClickListener(this);
         mBtn_Home.setOnClickListener(this);
 
+        mBtn_splitMinus.setOnLongClickListener(longClickListener);
+        mBtn_splitPlus.setOnLongClickListener(longClickListener);
+        mBtn_tipPercentMinus.setOnLongClickListener(longClickListener);
+        mBtn_tipPercentPlus.setOnLongClickListener(longClickListener);
+
         mTxtV_splitBill = (TextView) view.findViewById(R.id.textView_SplitBill_Digits);
         mTxtV_splitCount = (TextView) view.findViewById(R.id.textView_Split_Digit);
         mTxtV_tipPercent = (TextView) view.findViewById(R.id.textView_TipPecent_Digit);
@@ -172,13 +237,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         //Set up type writer and type face for Total Per Human text
         mTxtV_totalPerHuman = (TextView)view.findViewById(R.id.textview_TotalPerHuman);
-//        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGIB.TTF");
-//        mTxtV_totalPerHuman.setTypeface(typeface);
-//        mTxtV_totalPerHuman.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
-//        mTypeWriter = (Typewriter) mTxtV_totalPerHuman;
-//        mTypeWriter.setCharacterDelay(50);
-
-
     }
 
 
@@ -373,25 +431,17 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             //Check how split count and set Totals text view accordingly
             if(Integer.parseInt(mTxtV_splitCount.getText().toString()) > 1) {
                 if(!mTxtV_totalPerHuman.getText().toString().equals(TOTAL_PER_HUMAN))
-//                    mTypeWriter.animateText(TOTAL_PER_HUMAN, false);
                     mTxtV_totalPerHuman.setText(TOTAL_PER_HUMAN);
             }
             else {
                 if(!mTxtV_totalPerHuman.equals(YOU_PAY))
-//                    mTypeWriter.animateText(YOU_PAY, false);
                     mTxtV_totalPerHuman.setText(YOU_PAY);
             }
-
-
-
-
         } catch (Exception e) {
             Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("ERROR", e.getLocalizedMessage());
         }
     }
-
-
 
 }
 
