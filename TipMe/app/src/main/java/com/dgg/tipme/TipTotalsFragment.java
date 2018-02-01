@@ -64,26 +64,32 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    private class MyTask extends AsyncTask<String, Void, String>{
+    private class MyTask extends AsyncTask<Button, Void, String>{
 
-        int sleepCount = 1;
+        int sleepCount = 0;
+        String temp;
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(Button... buttons) {
+
+            if(buttons[0].getId() == mBtn_splitMinus.getId())
+                temp = "Split Minus";
+            else if(buttons[0].getId() == mBtn_splitPlus.getId())
+                temp = "Split plus";
 
             try{
-                while(mBtn_splitMinus.isPressed()){
+
+                while(mBtn_splitMinus.isPressed() || mBtn_splitPlus.isPressed()){
 
                     if(sleepCount <= 2) Thread.sleep(350);
                     else if(sleepCount <= 5) Thread.sleep(250);
-                    else if(sleepCount <= 10) Thread.sleep(100);
-                    else Thread.sleep(50);
+                    else Thread.sleep(100);
                     sleepCount++;
-                    publishProgress();
+                    publishProgress();  //calls onProgressUpdate()
                 }
 
             } catch (Exception e){
-                e.printStackTrace();
+                Log.e("ERROR", e.getMessage());
             }
             return null;
         }
@@ -93,13 +99,14 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
             mTxtV_splitCount.setText(Integer.toString(sleepCount));
+
         }
 
         // Runs on UI thread when doInBackground() is done.
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Toast.makeText(view.getContext(), "Thread DONE", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Thread DONE for btn: " + temp, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -185,16 +192,26 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
-    // Handles long press
+    /**
+     * Handles LongClick actions
+     */
     View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            final int id = v.getId();
+
 
             if(mBtn_splitMinus.isPressed()){
-                Toast.makeText(view.getContext(), " Thread START", Toast.LENGTH_SHORT).show();
-                new MyTask().execute();
+                Toast.makeText(view.getContext(), "Btn pressed: Split Minus", Toast.LENGTH_SHORT).show();
+                new MyTask().execute(mBtn_splitMinus);
+            }
+            else if(mBtn_splitPlus.isPressed()){
+                Toast.makeText(view.getContext(), "Btn pressed: Split Plus", Toast.LENGTH_SHORT).show();
+                new MyTask().execute(mBtn_splitPlus);
+            }
+            else if(mBtn_tipPercentMinus.isPressed()){
+
+            }
+            else if(mBtn_tipPercentPlus.isPressed()){
 
             }
 
