@@ -34,8 +34,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
     private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");
 
-    private Typewriter mTypeWriter;   //Custom class to animate textView text like a "type writer"
-
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -59,57 +57,38 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         mTxtV_tipPercent.setText(MainActivity.Users_Service);
 
         updateTipTotalAndSplitBill(percentStringToDouble(MainActivity.Users_Service), 1); //initial split is 1
-
     }
 
 
 
-    private class MyTask extends AsyncTask<Button, Void, String>{
+    private Boolean SplitMinusBtnPressed(){
+        // if able to decrement, update bill info with decremented split count
+        int splitCount = Integer.parseInt(mTxtV_splitCount.getText().toString());
+        if(canDecrementSplitCount(splitCount)) {
+            String newSplitCountStr = Integer.toString(splitCount - 1);
+            mTxtV_splitCount.setText(newSplitCountStr);
+            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), splitCount - 1);
 
-        int sleepCount = 0;
-        String temp;
-
-        @Override
-        protected String doInBackground(Button... buttons) {
-
-            if(buttons[0].getId() == mBtn_splitMinus.getId())
-                temp = "Split Minus";
-            else if(buttons[0].getId() == mBtn_splitPlus.getId())
-                temp = "Split plus";
-
-            try{
-
-                while(mBtn_splitMinus.isPressed() || mBtn_splitPlus.isPressed()){
-
-                    if(sleepCount <= 2) Thread.sleep(350);
-                    else if(sleepCount <= 5) Thread.sleep(250);
-                    else Thread.sleep(100);
-                    sleepCount++;
-                    publishProgress();  //calls onProgressUpdate()
-                }
-
-            } catch (Exception e){
-                Log.e("ERROR", e.getMessage());
-            }
-            return null;
+            return true;    //able to decrement
         }
-
-        //Runs on UI thread after publishProgress() is called in doInBackground()
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-            mTxtV_splitCount.setText(Integer.toString(sleepCount));
-
-        }
-
-        // Runs on UI thread when doInBackground() is done.
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Toast.makeText(view.getContext(), "Thread DONE for btn: " + temp, Toast.LENGTH_SHORT).show();
-        }
+        else return false;  //not able to decrement
     }
 
+
+    private Boolean SplitPlusBtnPressed(){
+        // Get incremented split count
+        int newSplitCount = Integer.parseInt(mTxtV_splitCount.getText().toString()) + 1;
+
+        // Check if you can increment split count,if so, update split count and bill info.
+        if (canIncrementSplitCount(newSplitCount)) {
+            String newSplitCountStr = Integer.toString(newSplitCount);
+            mTxtV_splitCount.setText(newSplitCountStr);
+            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), newSplitCount);
+
+            return true;    //can increment
+        }
+        else return false;  //cant increment
+    }
 
 
     @Override
@@ -117,24 +96,10 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         int id = v.getId();
 
         if (id == mBtn_splitMinus.getId()) {
-            // if able to decrement, update bill info with decremented split count
-            int splitCount = Integer.parseInt(mTxtV_splitCount.getText().toString());
-            if(canDecrementSplitCount(splitCount)) {
-                String newSplitCountStr = Integer.toString(splitCount - 1);
-                mTxtV_splitCount.setText(newSplitCountStr);
-                updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), splitCount - 1);
-            }
+          SplitMinusBtnPressed();
 
         } else if (id == mBtn_splitPlus.getId()) {
-            // Get incremented split count
-            int newSplitCount = Integer.parseInt(mTxtV_splitCount.getText().toString()) + 1;
-
-            // Check if you can increment split count,if so, update split count and bill info.
-            if (canIncrementSplitCount(newSplitCount)) {
-                String newSplitCountStr = Integer.toString(newSplitCount);
-                mTxtV_splitCount.setText(newSplitCountStr);
-                updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), newSplitCount);
-            }
+          SplitPlusBtnPressed();
 
         } else if (id == mBtn_tipPercentMinus.getId()) {
             Double newTipPercent = percentStringToDouble(mTxtV_tipPercent.getText().toString()) - 0.01; // Get decremented percent
@@ -201,11 +166,9 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
             if(mBtn_splitMinus.isPressed()){
-                Toast.makeText(view.getContext(), "Btn pressed: Split Minus", Toast.LENGTH_SHORT).show();
                 new MyTask().execute(mBtn_splitMinus);
             }
             else if(mBtn_splitPlus.isPressed()){
-                Toast.makeText(view.getContext(), "Btn pressed: Split Plus", Toast.LENGTH_SHORT).show();
                 new MyTask().execute(mBtn_splitPlus);
             }
             else if(mBtn_tipPercentMinus.isPressed()){
@@ -215,10 +178,60 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
             }
 
-
             return true;
         }
     };
+
+
+
+    private class MyTask extends AsyncTask<Button, Button, Button>{
+
+        Boolean flag_keepGoing = true;
+        Boolean error = false;
+        String errorMsg = "";
+
+
+        @Override
+        protected Button doInBackground(Button... buttons) {
+
+            try{
+                    while(flag_keepGoing && buttons[0].isPressed()) {
+                        Thread.sleep(75);
+                        publishProgress(buttons);  //calls onProgressUpdate()
+                    }
+
+            } catch (Exception e){
+                Log.e("ERROR", e.getMessage());
+                error = true;
+                errorMsg = e.getMessage();
+            }
+            return buttons[0];
+        }
+
+        //Runs on UI thread after publishProgress() is called in doInBackground()
+        @Override
+        protected void onProgressUpdate(Button... buttons) {
+            super.onProgressUpdate(buttons);
+
+            if(buttons[0].getId() == mBtn_splitMinus.getId())
+                flag_keepGoing = SplitMinusBtnPressed();
+            else if(buttons[0].getId() == mBtn_splitPlus.getId())
+                flag_keepGoing = SplitPlusBtnPressed();
+
+
+        }
+
+        // Runs on UI thread when doInBackground() is done.
+        @Override
+        protected void onPostExecute(Button button) {
+            super.onPostExecute(button);
+
+            if(error) Toast.makeText(view.getContext(), "ERROR:" + errorMsg, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
 
     //**** METHODS ****//
 
@@ -258,28 +271,28 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Double percentStringToDouble(String percentStr){
+    private Double percentStringToDouble(String percentStr){
 
         return Double.parseDouble(percentStr.substring(0, percentStr.indexOf('%'))) / 100;
     }
 
 
 
-    public Double moneyStringToDouble(String moneyStr){
+    private Double moneyStringToDouble(String moneyStr){
 
         return Double.parseDouble(removeMoneyAndCommaChars(moneyStr));
     }
 
 
 
-    public String doubleToMoneyString(Double doubleNum){
+    private String doubleToMoneyString(Double doubleNum){
 
         return "$" + DECIMAL_FORMATTER.format(doubleNum);
     }
 
 
 
-    public String doubleToPercentString(Double doubleNum){
+    private String doubleToPercentString(Double doubleNum){
         DecimalFormat decimalFormat = new DecimalFormat("00.00");
         String temp = decimalFormat.format(doubleNum * 100);
 
@@ -290,7 +303,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public String removeMoneyAndCommaChars(String str) {
+    private String removeMoneyAndCommaChars(String str) {
 
         // Remove money sign
         if (str.charAt(0) == '$') {
@@ -310,12 +323,12 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Boolean canIncrementSplitCount(int splitCount){
+    private Boolean canIncrementSplitCount(int splitCount){
 
         String error_splitRange = "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".";
 
         // Check if current split digit is at max
-        if (splitCount >= MAX_SPLIT_NUM) {
+        if (splitCount > MAX_SPLIT_NUM) {
             Toast.makeText(view.getContext(), error_splitRange, Toast.LENGTH_SHORT).show();
             return false;   // err, split digit at max
         }
@@ -331,7 +344,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Boolean canDecrementSplitCount(int splitCount){
+    private Boolean canDecrementSplitCount(int splitCount){
         if(splitCount <= MIN_SPLIT_NUM){
             Toast.makeText(view.getContext(), "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".", Toast.LENGTH_SHORT).show();
             return false;
@@ -341,7 +354,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Boolean canIncrementOrDecrementTipPercent(Double newTipPercent){
+    private Boolean canIncrementOrDecrementTipPercent(Double newTipPercent){
         if (newTipPercent > MAX_PERCENT_TIP){
             Toast.makeText(view.getContext(), "Can't increase percent any higher.", Toast.LENGTH_SHORT).show();
             return false;
@@ -355,7 +368,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Boolean canRoundTipUpOrDown(Double numToRoundBy){
+    private Boolean canRoundTipUpOrDown(Double numToRoundBy){
         final Double MIN_TIP_AMOUNT = 0.00;
         final Double CURRENT_TIP = moneyStringToDouble(mTxtV_tip.getText().toString());
 
@@ -377,7 +390,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Double getRoundedTip(Double numToRoundBy){
+    private Double getRoundedTip(Double numToRoundBy){
         final Double ONE_DOLLAR = 1.00;
         String currentTipStr = mTxtV_tip.getText().toString();
         Double currentTipDbl = moneyStringToDouble(currentTipStr);
@@ -404,14 +417,14 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    public Double divideBill(int divisor, Double bill){
+    private Double divideBill(int divisor, Double bill){
 
         return bill / (double) divisor;
     }
 
 
 
-    public void updateTipTotalAndSplitBill(Double tipPercent, int splitCount){
+    private void updateTipTotalAndSplitBill(Double tipPercent, int splitCount){
 
         try {
             // Calculate splitBill, tip and total amounts
