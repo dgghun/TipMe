@@ -72,7 +72,6 @@ public class MainActivity extends SingleFragmentActivity {
 //        FRAG_LAST = currentFrag;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-
         // fragment animation
         transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);
         transaction.replace(R.id.fragment_container, someFragment).addToBackStack(currentFrag);

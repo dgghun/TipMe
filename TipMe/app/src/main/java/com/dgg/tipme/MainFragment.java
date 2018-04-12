@@ -83,7 +83,6 @@ public class MainFragment extends Fragment {
                 Fragment fragment = new BillAmountFragment();
                 ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_MAIN_FRAG);
 
-
             }
         });
 
@@ -130,35 +129,5 @@ public class MainFragment extends Fragment {
 
 }
 
-//TODO - NOTES *******************************************************************************************
-
-
-// Test Thread
-//        Thread myThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true){
-//                    try{
-//                        handlerAnimateText.sendMessage(handlerAnimateText.obtainMessage());
-//                        Thread.sleep(2000);
-//                    }catch (Throwable t){
-//
-//                    }
-//                }
-//            }
-//        });
-//        myThread.start();
-
-
-
-//    /**
-//     * Runnable handler
-//     */
-//    Handler handlerAnimateText = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg){
-//            Toast.makeText(view.getContext(), msg.toString(), Toast.LENGTH_SHORT).show();
-//        }
-//    };
 
 

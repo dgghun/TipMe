@@ -48,6 +48,25 @@
         <item name="android:shadowDx">0</item>
         <item name="android:shadowDy">0</item>
         <item name="android:shadowRadius">5</item>
+    </style>
+
+    <!--Calculator buttons Layout 2.0 -->
+    <style name="Buttons_calculator_2" parent="android:Theme.Holo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">#C9FBFF</item>
+
+        <item name="android:shadowColor">#4DE7FF</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+
+        <item name="android:background">@drawable/buttonshape_calc_selector_2</item>
 
     </style>
 
@@ -69,6 +88,7 @@
         <item name="android:shadowRadius">7</item>
     </style>
 
+
     <!-- For calculator green tip button-->
     <style name="Buttons_calculator_Green" parent="android:Theme.Holo">
         <item name="android:layout_width">wrap_content</item>
@@ -86,7 +106,6 @@
         <item name="android:shadowDy">0</item>
         <item name="android:shadowRadius">5</item>
     </style>
-
 
     <!-- Service great-->
     <style name="Buttons_service_great" parent="android:Theme.Holo">

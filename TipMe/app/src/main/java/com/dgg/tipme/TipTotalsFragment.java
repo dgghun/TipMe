@@ -60,99 +60,37 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
-    private Boolean SplitMinusBtnPressed(){
-        // if able to decrement, update bill info with decremented split count
-        int splitCount = Integer.parseInt(mTxtV_splitCount.getText().toString());
-        if(canDecrementSplitCount(splitCount)) {
-            String newSplitCountStr = Integer.toString(splitCount - 1);
-            mTxtV_splitCount.setText(newSplitCountStr);
-            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), splitCount - 1);
-
-            return true;    //able to decrement
-        }
-        else return false;  //not able to decrement
-    }
-
-
-    private Boolean SplitPlusBtnPressed(){
-        // Get incremented split count
-        int newSplitCount = Integer.parseInt(mTxtV_splitCount.getText().toString()) + 1;
-
-        // Check if you can increment split count,if so, update split count and bill info.
-        if (canIncrementSplitCount(newSplitCount)) {
-            String newSplitCountStr = Integer.toString(newSplitCount);
-            mTxtV_splitCount.setText(newSplitCountStr);
-            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), newSplitCount);
-
-            return true;    //can increment
-        }
-        else return false;  //cant increment
-    }
-
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
 
         if (id == mBtn_splitMinus.getId()) {
-          SplitMinusBtnPressed();
+            SplitMinusBtnPressed();
 
         } else if (id == mBtn_splitPlus.getId()) {
-          SplitPlusBtnPressed();
+            SplitPlusBtnPressed();
 
         } else if (id == mBtn_tipPercentMinus.getId()) {
-            Double newTipPercent = percentStringToDouble(mTxtV_tipPercent.getText().toString()) - 0.01; // Get decremented percent
-
-            //check if can decrement percent
-            if(canIncrementOrDecrementTipPercent(newTipPercent)){
-                String newTipPercentStr = doubleToPercentString(newTipPercent);
-                mTxtV_tipPercent.setText(newTipPercentStr);
-                updateTipTotalAndSplitBill(newTipPercent, Integer.parseInt(mTxtV_splitCount.getText().toString()));
-            }
+            TipPercentMinusBtnPressed();
 
         } else if (id == mBtn_tipPercentPlus.getId()) {
-            Double newTipPercent = percentStringToDouble(mTxtV_tipPercent.getText().toString()) + 0.01; // Get decremented percent
-
-            //check if can decrement percent
-            if(canIncrementOrDecrementTipPercent(newTipPercent)){
-                String newTipPercentStr = doubleToPercentString(newTipPercent);
-                mTxtV_tipPercent.setText(newTipPercentStr);
-                updateTipTotalAndSplitBill(newTipPercent, Integer.parseInt(mTxtV_splitCount.getText().toString()));
-            }
+            TipPercentPlusBtnPressed();
 
         } else if (id == mBtn_rndUp.getId()) {
             final Double ONE_DOLLAR = 1.00;
-
-            if(canRoundTipUpOrDown(ONE_DOLLAR)) {
-                Double splitBill = moneyStringToDouble(mTxtV_splitBill.getText().toString());
-                Double newTip = getRoundedTip(ONE_DOLLAR);
-
-                mTxtV_tip.setText(doubleToMoneyString(newTip));
-                mTxtV_total.setText(doubleToMoneyString(splitBill + newTip));
-
-            }
+            RoundUpOrDownBtnPressed(ONE_DOLLAR);
 
         } else if (id == mBtn_rndDown.getId()) {
             final Double NEGATIVE_ONE_DOLLAR = -1.00;
-
-            if(canRoundTipUpOrDown(NEGATIVE_ONE_DOLLAR)) {
-                Double splitBill = moneyStringToDouble(mTxtV_splitBill.getText().toString());
-                Double newTip = getRoundedTip(NEGATIVE_ONE_DOLLAR);
-
-                mTxtV_tip.setText(doubleToMoneyString(newTip));
-                mTxtV_total.setText(doubleToMoneyString(splitBill + newTip));
-
-            }
+            RoundUpOrDownBtnPressed(NEGATIVE_ONE_DOLLAR);
 
         } else if (id == mBtn_Calc.getId()) {
-
-            Toast.makeText(view.getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+            Fragment fragment = new CalculatorFragment();
+            ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_TIP_TOTALS);
 
         } else if (id == mBtn_Home.getId()) {
             Fragment fragment = new MainFragment();
             ((MainActivity) getActivity()).replaceFragment(fragment, MainActivity.FRAG_TIP_TOTALS); // Start HowWasSvcFragment
-
         }
     }
 
@@ -166,16 +104,16 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
             if(mBtn_splitMinus.isPressed()){
-                new MyTask().execute(mBtn_splitMinus);
+                new MyTask().execute(mBtn_splitMinus);  // Pass in button pressed
             }
             else if(mBtn_splitPlus.isPressed()){
-                new MyTask().execute(mBtn_splitPlus);
+                new MyTask().execute(mBtn_splitPlus);   // Pass in button pressed
             }
             else if(mBtn_tipPercentMinus.isPressed()){
-
+                new MyTask().execute(mBtn_tipPercentMinus); // Pass in button pressed
             }
             else if(mBtn_tipPercentPlus.isPressed()){
-
+                new MyTask().execute(mBtn_tipPercentPlus);  // Pass in button pressed
             }
 
             return true;
@@ -217,8 +155,10 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
                 flag_keepGoing = SplitMinusBtnPressed();
             else if(buttons[0].getId() == mBtn_splitPlus.getId())
                 flag_keepGoing = SplitPlusBtnPressed();
-
-
+            else if(buttons[0].getId() == mBtn_tipPercentMinus.getId())
+                flag_keepGoing = TipPercentMinusBtnPressed();
+            else if(buttons[0].getId() == mBtn_tipPercentPlus.getId())
+                flag_keepGoing = TipPercentPlusBtnPressed();
         }
 
         // Runs on UI thread when doInBackground() is done.
@@ -233,7 +173,79 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
 
 
-    //**** METHODS ****//
+    //*******************************************************************
+    //**** METHODS *****************************************************
+    //********************************************************************
+
+    private void RoundUpOrDownBtnPressed(Double dollarAmount){
+        if(canRoundTipUpOrDown(dollarAmount)) {
+            Double splitBill = moneyStringToDouble(mTxtV_splitBill.getText().toString());
+            Double newTip = getRoundedTip(dollarAmount);
+            mTxtV_tip.setText(doubleToMoneyString(newTip));
+            mTxtV_total.setText(doubleToMoneyString(splitBill + newTip));
+        }
+    }
+
+
+    private Boolean SplitMinusBtnPressed(){
+        // if able to decrement, update bill info with decremented split count
+        int splitCount = Integer.parseInt(mTxtV_splitCount.getText().toString());
+        if(canDecrementSplitCount(splitCount)) {
+            String newSplitCountStr = Integer.toString(splitCount - 1);
+            mTxtV_splitCount.setText(newSplitCountStr);
+            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), splitCount - 1);
+
+            return true;    //able to decrement
+        }
+        else return false;  //not able to decrement
+    }
+
+
+    private Boolean SplitPlusBtnPressed(){
+        // Get incremented split count
+        int newSplitCount = Integer.parseInt(mTxtV_splitCount.getText().toString()) + 1;
+
+        // Check if you can increment split count,if so, update split count and bill info.
+        if (canIncrementSplitCount(newSplitCount)) {
+            String newSplitCountStr = Integer.toString(newSplitCount);
+            mTxtV_splitCount.setText(newSplitCountStr);
+            updateTipTotalAndSplitBill(percentStringToDouble(mTxtV_tipPercent.getText().toString()), newSplitCount);
+
+            return true;    //can increment
+        }
+        else return false;  //cant increment
+    }
+
+
+    private Boolean TipPercentMinusBtnPressed(){
+        Double newTipPercent = percentStringToDouble(mTxtV_tipPercent.getText().toString()) - 0.01; // Get decremented percent
+
+        //check if can decrement percent
+        if(canIncrementOrDecrementTipPercent(newTipPercent)){
+            String newTipPercentStr = doubleToPercentString(newTipPercent);
+            mTxtV_tipPercent.setText(newTipPercentStr);
+            updateTipTotalAndSplitBill(newTipPercent, Integer.parseInt(mTxtV_splitCount.getText().toString()));
+
+            return true;    // can increment
+        }
+        else return false;  //cant increment
+    }
+
+
+    private Boolean TipPercentPlusBtnPressed(){
+        Double newTipPercent = percentStringToDouble(mTxtV_tipPercent.getText().toString()) + 0.01; // Get decremented percent
+
+        //check if can decrement percent
+        if(canIncrementOrDecrementTipPercent(newTipPercent)){
+            String newTipPercentStr = doubleToPercentString(newTipPercent);
+            mTxtV_tipPercent.setText(newTipPercentStr);
+            updateTipTotalAndSplitBill(newTipPercent, Integer.parseInt(mTxtV_splitCount.getText().toString()));
+
+            return true;    //can increment
+        }
+        else return false;  //cant increment
+    }
+
 
     private void setUpButtons_TxtViews() {
         mBtn_splitMinus = (Button) view.findViewById(R.id.button_minus_SplitTip);
@@ -270,12 +282,10 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private Double percentStringToDouble(String percentStr){
 
         return Double.parseDouble(percentStr.substring(0, percentStr.indexOf('%'))) / 100;
     }
-
 
 
     private Double moneyStringToDouble(String moneyStr){
@@ -284,12 +294,10 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private String doubleToMoneyString(Double doubleNum){
 
         return "$" + DECIMAL_FORMATTER.format(doubleNum);
     }
-
 
 
     private String doubleToPercentString(Double doubleNum){
@@ -300,7 +308,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
             return temp.substring(1, temp.indexOf('.')) + "%";
         return temp.substring(0, temp.indexOf('.')) + "%";
     }
-
 
 
     private String removeMoneyAndCommaChars(String str) {
@@ -320,7 +327,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
 
         return tempStr;
     }
-
 
 
     private Boolean canIncrementSplitCount(int splitCount){
@@ -343,7 +349,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private Boolean canDecrementSplitCount(int splitCount){
         if(splitCount <= MIN_SPLIT_NUM){
             Toast.makeText(view.getContext(), "Split range is " + MIN_SPLIT_NUM + " to " + MAX_SPLIT_NUM + ".", Toast.LENGTH_SHORT).show();
@@ -351,7 +356,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         }
         return true;
     }
-
 
 
     private Boolean canIncrementOrDecrementTipPercent(Double newTipPercent){
@@ -365,7 +369,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         }
         else return true;
     }
-
 
 
     private Boolean canRoundTipUpOrDown(Double numToRoundBy){
@@ -387,7 +390,6 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
         else return true;
 
     }
-
 
 
     private Double getRoundedTip(Double numToRoundBy){
@@ -416,12 +418,10 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private Double divideBill(int divisor, Double bill){
 
         return bill / (double) divisor;
     }
-
 
 
     private void updateTipTotalAndSplitBill(Double tipPercent, int splitCount){

@@ -12,6 +12,7 @@
     <string name="str_textview_bill">Original Bill</string>
     <string name="str_textview_split_bill">Bill</string>
     <string name="str_textview_1234567.90">$1234567.90</string>
+    <string name="str_textview_123456.00">123456.00</string>
     <string name="str_textview_split_digit">1</string>
     <string name="str_textview_99_percent">99%</string>
     <string name="str_textview_split">Split</string>
@@ -39,10 +40,16 @@
     <string name="str_button_calc_number_9">9</string>
     <string name="str_button_calc_number_0">0</string>
     <string name="str_button_calc_number_x">DEL</string>
+    <string name="str_button_calc_number_plus">+</string>
+    <string name="str_button_calc_number_minus">-</string>
+    <string name="str_button_calc_number_times">x</string>
+    <string name="str_button_calc_number_divide">/</string>
+    <string name="str_button_calc_number_equals">=</string>
     <string name="str_button_calc_number_MoneySign">TIP</string>
     <string name="str_edittext_custom_toast">Custom Toast</string>
     <string name="str_button_great">Great</string>
     <string name="str_button_good">Good</string>
     <string name="str_button_bad">123456</string>
+    <string name="str_button_back">Back</string>
 
 </resources>
