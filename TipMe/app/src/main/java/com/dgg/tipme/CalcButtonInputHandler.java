@@ -17,6 +17,7 @@ public class CalcButtonInputHandler {
     public int MAX_LENGTH = 9;
 
 
+
     public CalcButtonInputHandler(View view) {
         this.mView = view;
     }
@@ -45,6 +46,10 @@ public class CalcButtonInputHandler {
             mDecimalFormat.setRoundingMode(RoundingMode.DOWN);
             return mDecimalFormat.format(Double.parseDouble(input) / 10);
         }
+    }
+
+    public String clear(){
+        return mDecimalFormat.format(0.00);
     }
 
 }

@@ -20,7 +20,8 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new MainFragment();
+//        return new MainFragment();
+        return new CalculatorFragment();    //TESTING...Remove me!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     //Handles back press navigation flags. Was having issues w/ onclick working when

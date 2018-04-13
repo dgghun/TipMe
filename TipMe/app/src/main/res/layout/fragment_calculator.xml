@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dgg.tipme.MainActivity"
-    >
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.dgg.tipme.MainActivity">
 
     <LinearLayout
-        android:id="@+id/LinearLayout_calculatorInputAreaContainer"
+        android:id="@+id/LinearLayout_calculatorNumberStorageContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:padding="10dp"
+        android:layout_marginTop="0dp"
+        >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/TextView_calculatorNumberStorageArea"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:text="@string/str_edittext_bill_amount"
+            android:textAlignment="textEnd"
+            android:textColor="#C9FBFF"
+            android:shadowColor="#4DE7FF"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="10"
+
+            android:textSize="30sp"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout_calculatorInputAreaContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout_calculatorNumberStorageContainer"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
         android:background="@null"
 
 
@@ -29,7 +56,7 @@
             android:layout_height="match_parent"
             android:text="@string/str_textview_dollar_sign"
             android:textAlignment="center"
-            android:textSize="60sp"
+            android:textSize="80sp"
             android:textColor="#C9FBFF"
             android:shadowColor="#4DE7FF"
             android:shadowDx="0"
@@ -37,31 +64,33 @@
             android:shadowRadius="10"
             />
 
-        <EditText
-            android:id="@+id/EditText_calculatorInputDisplay"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/TextView_calculatorInputDisplay"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:text="@string/str_textview_123456.00"
-            android:textAlignment="textEnd"
-            android:textSize="60sp"
+            android:text="@string/str_edittext_bill_amount"
+            android:gravity="end|center"
             android:textColor="#C9FBFF"
             android:shadowColor="#4DE7FF"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="10"
-            android:background="@null"
-            android:focusable="false"
+
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="80sp"
+            app:autoSizeStepGranularity="2sp"
+
             />
 
     </LinearLayout>
 
     <GridLayout
         android:id="@+id/GridLayout_calculatorBtnContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/LinearLayout_calculatorInputAreaContainer"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
@@ -145,7 +174,7 @@
         <Button
             style="@style/Buttons_calculator_2"
             android:id="@+id/button_calculatorCalcNumber_delete"
-            android:text="@string/str_button_calc_number_x"
+            android:text="@string/str_button_calc_number_clr"
             />
 
         <Button
