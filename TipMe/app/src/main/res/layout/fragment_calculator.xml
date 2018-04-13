@@ -31,6 +31,8 @@
             android:shadowRadius="10"
 
             android:textSize="30sp"
+            app:autoSizeTextType="uniform"
+
 
             />
 
@@ -39,47 +41,33 @@
     <LinearLayout
         android:id="@+id/LinearLayout_calculatorInputAreaContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_below="@+id/LinearLayout_calculatorNumberStorageContainer"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="0dp"
         android:background="@null"
-
-
         >
-        <TextView
-            android:id="@+id/TextView_calculatorInputArea_DollarSign"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/str_textview_dollar_sign"
-            android:textAlignment="center"
-            android:textSize="80sp"
-            android:textColor="#C9FBFF"
-            android:shadowColor="#4DE7FF"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="10"
-            />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/TextView_calculatorInputDisplay"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:text="@string/str_edittext_bill_amount"
+            android:text="@string/str_textview_zero"
             android:gravity="end|center"
             android:textColor="#C9FBFF"
             android:shadowColor="#4DE7FF"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="10"
+            android:textSize="80sp"
 
+            android:max="1"
             app:autoSizeTextType="uniform"
-            app:autoSizeMaxTextSize="80sp"
             app:autoSizeStepGranularity="2sp"
-
+            app:autoSizeMinTextSize="20sp"
             />
 
     </LinearLayout>
@@ -89,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/LinearLayout_calculatorInputAreaContainer"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -173,8 +161,8 @@
 
         <Button
             style="@style/Buttons_calculator_2"
-            android:id="@+id/button_calculatorCalcNumber_delete"
-            android:text="@string/str_button_calc_number_clr"
+            android:id="@+id/button_calculatorCalcNumber_equals"
+            android:text="@string/str_button_calc_number_equals"
             />
 
         <Button
@@ -185,14 +173,24 @@
 
         <Button
             style="@style/Buttons_calculator_2"
-            android:id="@+id/button_calculatorCalcNumber_equals"
-            android:text="@string/str_button_calc_number_equals"
+            android:id="@+id/button_calculatorDecimal"
+            android:text="@string/str_button_calc_decimal"
+            android:layout_gravity="center_horizontal"
             />
 
         <Button
             style="@style/Buttons_calculator_2"
             android:id="@+id/button_calculatorCalcNumber_divide"
             android:text="@string/str_button_calc_number_divide"
+            />
+        <Button
+            style="@style/Buttons_calculator_2"
+            android:id="@+id/button_calculatorCalcNumber_delete"
+            android:text="@string/str_button_calc_number_clr"
+            android:layout_columnSpan="4"
+            android:layout_gravity="center"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             />
     </GridLayout>
 

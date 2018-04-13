@@ -28,6 +28,7 @@
     <string name="str_textview_home">Home</string>
     <string name="str_textview_quit">Quit</string>
     <string name="str_textview_tip">Tip</string>
+    <string name="str_textview_zero">0</string>
 
     <string name="str_button_calc_number_1">1</string>
     <string name="str_button_calc_number_2">2</string>
@@ -40,12 +41,13 @@
     <string name="str_button_calc_number_9">9</string>
     <string name="str_button_calc_number_0">0</string>
     <string name="str_button_calc_number_x">DEL</string>
-    <string name="str_button_calc_number_clr">CLR</string>
+    <string name="str_button_calc_number_clr">CLEAR</string>
     <string name="str_button_calc_number_plus">+</string>
     <string name="str_button_calc_number_minus">-</string>
     <string name="str_button_calc_number_times">x</string>
     <string name="str_button_calc_number_divide">/</string>
     <string name="str_button_calc_number_equals">=</string>
+    <string name="str_button_calc_decimal">.</string>
     <string name="str_button_calc_number_MoneySign">TIP</string>
     <string name="str_edittext_custom_toast">Custom Toast</string>
     <string name="str_button_great">Great</string>

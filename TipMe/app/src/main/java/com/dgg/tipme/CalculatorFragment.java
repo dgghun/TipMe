@@ -18,12 +18,13 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
     private View view;
     private Typeface typeface;
-    private TextView mTxtV_inputDisplay, mTxtV_dollarSign, mTxtV_numberCompCash;
-    private final int BTN_CLR = 10, BTN_EQUALS = 11, BTN_TIMES = 12, BTN_DIVIDE = 13, BTN_PLUS = 14, BTN_MINUS = 15;
+    private TextView mTxtV_inputDisplay, mTxtV_numberCompCash;
+    private final int BTN_CLR = 10, BTN_EQUALS = 11, BTN_TIMES = 12, BTN_DIVIDE = 13, BTN_PLUS = 14, BTN_MINUS = 15, BTN_DECIMAL = 16;
+    private final int LAST_BTN = BTN_DECIMAL;
     private List<Integer> buttonIdsList;
     private List<Button> buttonsList;
-    private int mFLAG_COMPUTATION_TYPE;
-    private double mFirstNum, mSecondNum, mNumberCache;
+
+    private final int MAX_INPUT_LENGTH = 12;
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");    // formats 2 decimal places
     private String mPLUS = "+", mMINUS = "-", mTIMES = "x", mDIVIDE = "/";
 
@@ -40,16 +41,10 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
         mTxtV_inputDisplay = (TextView)view.findViewById(R.id.TextView_calculatorInputDisplay);
         mTxtV_inputDisplay.setTypeface(typeface);
-        mTxtV_dollarSign = (TextView) view.findViewById(R.id.TextView_calculatorInputArea_DollarSign);
-        mTxtV_dollarSign.setTypeface(typeface);
+
         mTxtV_numberCompCash = (TextView)view.findViewById(R.id.TextView_calculatorNumberStorageArea);
         mTxtV_numberCompCash.setText("");
 
-        mFirstNum = -1;
-        mSecondNum = 1;
-        mFLAG_COMPUTATION_TYPE = 0;
-        mNumberCache = Double.parseDouble(mTxtV_inputDisplay.getText().toString());
-        mTxtV_inputDisplay.setText(decimalFormat.format(mNumberCache));
 
         setUpButtons();
         return view;
@@ -66,16 +61,16 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        CalcButtonInputHandler inputHandler = new CalcButtonInputHandler(view);
         String tempStr;
-//        //Search for button id pressed
+
+        //Search for button id pressed
         for (int i = 0; i <= buttonIdsList.size(); i++) {
 
-            if (id == buttonIdsList.get(i)) {   //If id found, i is the button pressed (0-9, X or $)
+            if (id == buttonIdsList.get(i)) {   //If id found, i is one of the buttons pressed
 
                 if (i == BTN_CLR) {
                     tempStr = " ";
-                    mTxtV_inputDisplay.setText(inputHandler.clear());
+                    mTxtV_inputDisplay.setText("0");
                     mTxtV_numberCompCash.setText(tempStr);
                 }
                 else if (i == BTN_EQUALS) {
@@ -92,43 +87,39 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
                         Toast.makeText(view.getContext(), "Can't divide by zero.", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        if(cacheNumStr.endsWith(mPLUS)){
-                            Toast.makeText(view.getContext(), decimalFormat.format(Double.parseDouble(cacheNumStr.substring(0, cacheNumStr.length()-2))), Toast.LENGTH_SHORT).show();
-//                            tempStr = decimalFormat.format(Double.parseDouble(cacheNumStr.substring(0, cacheNumStr.length()-2)))
-                        }
-                        else if(cacheNumStr.endsWith(mMINUS)){
 
-                        }
-                        else if(cacheNumStr.endsWith(mTIMES)){
-
-                        }
-                        else if(cacheNumStr.endsWith(mDIVIDE)){
-
-                        }
                     }
                 }
-                else if (i == BTN_PLUS){
+                else if (i == BTN_PLUS || i == BTN_MINUS || i == BTN_DIVIDE || i == BTN_TIMES){
                     tempStr = mTxtV_inputDisplay.getText().toString() + " " + mMINUS;
                     mTxtV_numberCompCash.setText(tempStr);
-                    mTxtV_inputDisplay.setText(decimalFormat.format(0.00));
+                    mTxtV_inputDisplay.setText("0");
                 }
-                else if (i == BTN_MINUS){
-                    tempStr = mTxtV_inputDisplay.getText().toString() + " " + mMINUS;
-                    mTxtV_numberCompCash.setText(tempStr);
-                    mTxtV_inputDisplay.setText(decimalFormat.format(0.00));
-                }
-                else if (i == BTN_TIMES){
-                    tempStr = mTxtV_inputDisplay.getText().toString() + " " + mTIMES;
-                    mTxtV_numberCompCash.setText(tempStr);
-                    mTxtV_inputDisplay.setText(decimalFormat.format(0.00));
-                }
-                else if (i == BTN_DIVIDE){
-                    tempStr = mTxtV_inputDisplay.getText().toString() + " " + mDIVIDE;
-                    mTxtV_numberCompCash.setText(tempStr);
-                    mTxtV_inputDisplay.setText(decimalFormat.format(0.00));
+                else if (i == BTN_DECIMAL){
+                    tempStr = mTxtV_inputDisplay.getText().toString();
+
+
+                    if(!tempStr.contains(".") && tempStr.length() < MAX_INPUT_LENGTH){
+                        tempStr = tempStr + ".";
+                        mTxtV_inputDisplay.setText(tempStr);
+                    }
                 }
                 else {   // i is a number so append it to current textView string
-                    mTxtV_inputDisplay.setText(inputHandler.append(Integer.toString(i), mTxtV_inputDisplay.getText().toString()));
+                    tempStr = mTxtV_inputDisplay.getText().toString();
+
+                    if(tempStr.length() >= MAX_INPUT_LENGTH){}  //Do nothing. Max characters reached
+                    else if(i == 0 && tempStr.startsWith("0") && !tempStr.contains(".")) {} // Do nothing. No leading zeros
+                    else{
+                        // No leading zeros. Replace with input digit
+                        if(tempStr.equals("0")){
+                            tempStr = Integer.toString(i);
+                        }
+                        else {
+                            tempStr = tempStr + Integer.toString(i);
+                        }
+
+                        mTxtV_inputDisplay.setText(tempStr);
+                    }
                 }
                 i = buttonIdsList.size() + 1; // break from loop
             }
@@ -141,13 +132,13 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
      * setUpButtons
      */
     private void setUpButtons() {
+
         buttonIdsList = new ArrayList<>();
         buttonsList = new ArrayList<>();
 
 
-        int mLastBtn = 15;
         // Set button ids, button views and click listener
-        for (int i = 0; i <= mLastBtn; i++) {
+        for (int i = 0; i <= LAST_BTN; i++) {
             if (i == BTN_CLR) {
                 buttonIdsList.add(getResources().getIdentifier("button_calculatorCalcNumber_delete", "id", getActivity().getPackageName()));
                 buttonsList.add((Button) view.findViewById(buttonIdsList.get(BTN_CLR)));
@@ -184,6 +175,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
                 buttonsList.get(BTN_DIVIDE).setOnClickListener(this);
                 buttonsList.get(BTN_DIVIDE).setTypeface(typeface);
             }
+            else if(i == BTN_DECIMAL){
+                buttonIdsList.add(getResources().getIdentifier("button_calculatorDecimal", "id", getActivity().getPackageName()));
+                buttonsList.add((Button) view.findViewById(buttonIdsList.get(BTN_DECIMAL)));
+                buttonsList.get(BTN_DECIMAL).setOnClickListener(this);
+                buttonsList.get(BTN_DECIMAL).setTypeface(typeface);
+            }
             else {
                 buttonIdsList.add(getResources().getIdentifier("button_calculatorCalcNumber_" + i, "id", getActivity().getPackageName()));
                 buttonsList.add((Button) view.findViewById(buttonIdsList.get(i)));
@@ -192,4 +189,34 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
             }
         }
     }   //END of setUpButtons()
+
+
+    private void computeEquals(){
+
+    }
+
+
+    private void computePlus(){
+
+    }
+
+
+    private void computeMinus(){
+
+    }
+
+
+    private void computeTimes(){
+
+    }
+
+
+    private void computeDivide(){
+
+    }
+
+
+
 }
+
+
