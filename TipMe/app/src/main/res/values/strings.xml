@@ -42,11 +42,11 @@
     <string name="str_button_calc_number_0">0</string>
     <string name="str_button_calc_number_x">DEL</string>
     <string name="str_button_calc_number_clr">CLEAR</string>
-    <string name="str_button_calc_number_plus">+</string>
-    <string name="str_button_calc_number_minus">-</string>
-    <string name="str_button_calc_number_times">x</string>
-    <string name="str_button_calc_number_divide">/</string>
-    <string name="str_button_calc_number_equals">=</string>
+    <string name="str_button_calc_number_plus">"\u002B"</string>
+    <string name="str_button_calc_number_minus">"\u2212"</string>
+    <string name="str_button_calc_number_times">"\u00D7"</string>
+    <string name="str_button_calc_number_divide">"\u00F7"</string>
+    <string name="str_button_calc_number_equals">"\u003D"</string>
     <string name="str_button_calc_decimal">.</string>
     <string name="str_button_calc_number_MoneySign">TIP</string>
     <string name="str_edittext_custom_toast">Custom Toast</string>

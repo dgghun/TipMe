@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/LinearLayout_calculatorNumberStorageContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="16dp"
@@ -30,9 +30,9 @@
             android:shadowDy="0"
             android:shadowRadius="10"
 
+            android:max="1"
             android:textSize="30sp"
             app:autoSizeTextType="uniform"
-
 
             />
 
@@ -41,7 +41,7 @@
     <LinearLayout
         android:id="@+id/LinearLayout_calculatorInputAreaContainer"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:layout_below="@+id/LinearLayout_calculatorNumberStorageContainer"
         android:orientation="horizontal"
         android:layout_marginBottom="0dp"
