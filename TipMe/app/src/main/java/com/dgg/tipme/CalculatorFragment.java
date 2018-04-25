@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     private final int LAST_BTN = BTN_DECIMAL;
     private List<Integer> buttonIdsList;
     private List<Button> buttonsList;
-    private List<Operation> mArray_inputOperations;
+
 
     private final int MAX_INPUT_LENGTH = 10, MAX_OPERATIONS = 9;
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");    // formats 2 decimal places
@@ -47,7 +48,7 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         mTxtV_numberCompCash = (TextView)view.findViewById(R.id.TextView_calculatorNumberStorageArea);
         mTxtV_numberCompCash.setText("");
 
-        mArray_inputOperations = new ArrayList<>();
+
 
         setUpButtons();
         return view;
@@ -66,6 +67,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         int id = v.getId();
         String tempStr;
 
+        // Equal sign in cash area means a calculation happened already so remove it.
+        if(mTxtV_numberCompCash.getText().toString().equals(mStr_EQUALS)){
+            tempStr = "";
+            mTxtV_numberCompCash.setText(tempStr);
+        }
+
         //Search for button id pressed
         for (int buttonId = 0; buttonId <= buttonIdsList.size(); buttonId++) {
 
@@ -75,45 +82,56 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
                     tempStr = " ";
                     mTxtV_inputDisplay.setText(tempStr);
                     mTxtV_numberCompCash.setText(tempStr);
-                    mArray_inputOperations.clear();
+
                 }
                 else if (buttonId == BTN_EQUALS) {
 
-                    if (mArray_inputOperations.size() <= 1 && mTxtV_inputDisplay.getText().toString().trim().isEmpty()){
-                        Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (mTxtV_inputDisplay.getText().toString().trim().isEmpty() && mArray_inputOperations.size() > 2){
-
-                        //If input is blank & there are operations, there is a trailing operator error.
-                        tempStr = "Input Error";
-                        mTxtV_numberCompCash.setText(tempStr);
-                        tempStr = " ";
-                        mTxtV_inputDisplay.setText(tempStr);
-                        mArray_inputOperations.clear();
-                        Toast.makeText(view.getContext(), "Trailing operator error.", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        calculateAndUpdateViews();
-                    }
+//                    if (mArray_inputOperations.size() <= 1 && mTxtV_inputDisplay.getText().toString().trim().isEmpty()){
+//                        Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
+//                    }
+//                    else if (mTxtV_inputDisplay.getText().toString().trim().isEmpty() && mArray_inputOperations.size() > 2){
+//
+//                        //If input is blank & there are operations, there is a trailing operator error.
+//                        tempStr = "Input Error";
+//                        mTxtV_numberCompCash.setText(tempStr);
+//                        tempStr = " ";
+//                        mTxtV_inputDisplay.setText(tempStr);
+//                        mArray_inputOperations.clear();
+//                        Toast.makeText(view.getContext(), "Trailing operator error.", Toast.LENGTH_SHORT).show();
+//                    }
+//                    else{
+//                        calculateAndUpdateViews();
+//                    }
                 }
                 else if (buttonId == BTN_PLUS){
-                    addOperationToList(mStr_PLUS);
+
+                    operatorCalculation(mStr_PLUS);
+
                 }
                 else if (buttonId == BTN_MINUS){
-                    addOperationToList(mStr_MINUS);
+
+                    operatorCalculation(mStr_MINUS);
+
                 }
                 else if (buttonId == BTN_DIVIDE){
-                    addOperationToList(mStr_DIVIDE);
+
+                    operatorCalculation(mStr_DIVIDE);
+
                 }
                 else if (buttonId == BTN_TIMES){
-                    addOperationToList(mStr_TIMES);
+                    operatorCalculation(mStr_TIMES);
+
                 }
                 else if (buttonId == BTN_DECIMAL){
                     tempStr = mTxtV_inputDisplay.getText().toString();
 
                     // Check if a decimal can be added to string
                     if(!tempStr.contains(".") && tempStr.length() < MAX_INPUT_LENGTH){
-                        tempStr = tempStr + ".";
+
+                        if(tempStr.trim().isEmpty())
+                            tempStr = "0.";
+                        else
+                            tempStr = tempStr + ".";
                         mTxtV_inputDisplay.setText(tempStr);
                     }
 
@@ -141,108 +159,95 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private void calculateAndUpdateViews(){
 
-        Double totalDbl = 0.0;
 
-        try {
-            for (Operation operation : mArray_inputOperations) {
 
-                Toast.makeText(view.getContext(), Double.toString(operation.getNumber()) + " " + operation.getOperator(), Toast.LENGTH_SHORT).show();
-                if (operation.getOperator().equals(mStr_PLUS)) {
-                    totalDbl = totalDbl + operation.getNumber();
-                }
-                else if (operation.getOperator().equals(mStr_MINUS)) {
-                    totalDbl = totalDbl - operation.getNumber();
-                }
-                else if (operation.getOperator().equals(mStr_TIMES)) {
-                    totalDbl = totalDbl * operation.getNumber();
-                }
-                else if (operation.getOperator().equals(mStr_DIVIDE)) {
+    private Boolean cacheIsEmpty(){
+        return (mTxtV_numberCompCash.getText().toString().trim().length() <= 1);
+    }
 
-                    if(operation.getNumber() == 0){
-                        throw new Exception("Division by zero");
-                    }else {
-                        totalDbl = totalDbl / operation.getNumber();
-                    }
-                }
-            }
 
-            String tempStr = stripTrailingZeros(Double.toString(totalDbl));
-            mTxtV_inputDisplay.setText(tempStr);
-            mTxtV_numberCompCash.setText(mStr_EQUALS);
-            mArray_inputOperations.clear();
 
-        } catch (Exception e){
-            Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-            String tempStr = " ";
-            mTxtV_inputDisplay.setText(tempStr);
+
+    private Boolean cacheContainsOperator(){
+        String cache = mTxtV_numberCompCash.getText().toString();
+        return (cache.contains(mStr_DIVIDE) || cache.contains(mStr_TIMES) || cache.contains(mStr_PLUS) || cache.contains(mStr_MINUS) || cache.contains(mStr_EQUALS));
+    }
+    private void calculateNumbers(String operator){
+        Toast.makeText(view.getContext(), "calculateNumebrs()", Toast.LENGTH_SHORT).show();
+        if(mTxtV_numberCompCash.getText().toString().trim().endsWith(operator)){
+
+        }
+    }
+
+
+    private void operatorCalculation(String operator){
+
+        String tempStr;
+
+        if(cacheIsEmpty()){
+            tempStr = mTxtV_inputDisplay.getText().toString() + " " + operator;
             mTxtV_numberCompCash.setText(tempStr);
-            mArray_inputOperations.clear();
+            tempStr = " ";
+            mTxtV_inputDisplay.setText(tempStr);
         }
-    }
+        else if(cacheContainsOperator() && mTxtV_inputDisplay.getText().toString().trim().length() <= 0){
+            tempStr = mTxtV_numberCompCash.getText().toString().trim();
+            tempStr = tempStr.substring(0, tempStr.length() - 2) + " " + operator;
+            mTxtV_numberCompCash.setText(tempStr);
+        }
+        else{
 
-    private void addOperationToList(String operationString){
-        String tempStr = mTxtV_inputDisplay.getText().toString();
+            Double total = calculateCahceAndInput();
 
-        try {
-
-            if(mArray_inputOperations.size() >= MAX_OPERATIONS) {
-                Toast.makeText(view.getContext(), "Max allowed operations reached.", Toast.LENGTH_SHORT).show();
-            }
-            else if(tempStr.trim().isEmpty() && mArray_inputOperations.size() >= 1){                    // Check if switching current operator symbol
-                Operation operation = mArray_inputOperations.get(mArray_inputOperations.size() - 1);    // Get last operation
-                operation.setOperator(operationString);                                                 // change operator
-                mArray_inputOperations.set(mArray_inputOperations.size() - 1, operation);               // Set last operation with new operator
-                updateCacheDisplay();
-
-            }
-            else if (!tempStr.trim().isEmpty()) {                       // If input is not blank ...
-                Operation operation = new Operation();
-                operation.setOperator(operationString);                 // set operator
-                operation.setNumber(Double.parseDouble(tempStr));       // set number
-                mArray_inputOperations.add(operation);                  // add to list of operations
-
+            // if no errors in calculation
+            if(total >= 0.0){
+                tempStr = stripTrailingZeros(Double.toString(total)) + " " + operator;
+                mTxtV_numberCompCash.setText(tempStr);
                 tempStr = " ";
-                mTxtV_inputDisplay.setText(tempStr);            // Clear input display
-
-                updateCacheDisplay();
+                mTxtV_inputDisplay.setText(tempStr);
+            }else{
+                tempStr = " ";
+                mTxtV_inputDisplay.setText(tempStr);
+                mTxtV_numberCompCash.setText(tempStr);
             }
-        } catch (Exception e){
-            Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+
         }
     }
 
 
-    private class Operation{
-        private String operator;
-        private Double number;
+    /**
+     *
+     * @return double or -1 if division by zero
+     */
+    private double calculateCahceAndInput(){
 
-        public Operation(String operator, Double number) {
-            this.operator = operator;
-            this.number = number;
+        Double total = 0.0;
+        String cahceStr = mTxtV_numberCompCash.getText().toString().trim();
+        String operator = cahceStr.substring(cahceStr.length() - 1);
+        Double num1 = Double.parseDouble(cahceStr.substring(0, cahceStr.length() - 2));
+        Double num2 = Double.parseDouble(mTxtV_inputDisplay.getText().toString().trim());
+
+        if (operator.equals(mStr_PLUS)){
+            total = num1 + num2;
+        }
+        else if (operator.equals(mStr_MINUS)){
+            total = num1 - num2;
+        }
+        else if (operator.equals(mStr_TIMES)){
+            total = num1 * num2;
+        }
+        else if (operator.equals(mStr_DIVIDE)){
+
+            if(num2 <= 0.0) {
+                Toast.makeText(view.getContext(), "Can't divide by zero.", Toast.LENGTH_SHORT).show();
+                return -1.0;
+            }
+            else
+                total = num1 / num2;
         }
 
-        public Operation(){
-
-        }
-
-        public Double getNumber() {
-            return number;
-        }
-
-        public void setNumber(Double number) {
-            this.number = number;
-        }
-
-        public String getOperator() {
-
-            return operator;
-        }
-
-        public void setOperator(String operator) {
-            this.operator = operator;
-        }
+        return total;
     }
 
 
@@ -251,22 +256,7 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private void updateCacheDisplay(){
-        String tempStr = "";
 
-        // Loop through operations array, strip trailing zeros and update cache display.
-        for (Operation o : mArray_inputOperations) {
-            String tempNum = Double.toString(o.getNumber());
-
-            // Check for trailing zeros
-            if(tempNum.contains("."))
-                tempNum = stripTrailingZeros(tempNum);
-
-            tempStr = tempStr.trim() + tempNum + " " + o.getOperator();
-        }
-
-        mTxtV_numberCompCash.setText(tempStr);
-    }
 
 
     /**

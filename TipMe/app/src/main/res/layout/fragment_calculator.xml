@@ -64,6 +64,7 @@
             android:shadowRadius="10"
             android:textSize="80sp"
 
+
             android:max="1"
             app:autoSizeTextType="uniform"
             app:autoSizeStepGranularity="2sp"
