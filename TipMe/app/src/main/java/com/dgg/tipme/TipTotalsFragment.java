@@ -29,7 +29,7 @@ public class TipTotalsFragment extends Fragment implements View.OnClickListener 
     private final String BILL_MIN = "$1.00";
     private final String TOTAL = "Total";
     private final String YOU_PAY = "You Pay";
-    private final String TOTAL_PER_HUMAN = "Each Human Pays";
+    private final String TOTAL_PER_HUMAN = "Each Person Pays";
 
 
     private final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("###,###,##0.00");

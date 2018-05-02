@@ -64,11 +64,14 @@
             android:shadowRadius="10"
             android:textSize="80sp"
 
+            android:background="@drawable/textview_calc_right_border_no_color"
 
             android:max="1"
             app:autoSizeTextType="uniform"
             app:autoSizeStepGranularity="2sp"
             app:autoSizeMinTextSize="20sp"
+
+
             />
 
     </LinearLayout>

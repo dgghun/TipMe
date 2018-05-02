@@ -3,7 +3,6 @@ package com.dgg.tipme;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.math.MathUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +24,14 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     private final int LAST_BTN = BTN_DECIMAL;
     private List<Integer> buttonIdsList;
     private List<Button> buttonsList;
-
+    private final int mMAX_CALCULATION_SIZE = 11;
 
     private final int MAX_INPUT_LENGTH = 10, MAX_OPERATIONS = 9;
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");    // formats 2 decimal places
     private final String mStr_PLUS = "\u002B", mStr_MINUS = "\u2212", mStr_TIMES = "\u00D7", mStr_DIVIDE = "\u00F7", mStr_EQUALS = "\u003D", mStr_ERROR = "ERROR";
 
-
+    Boolean mInputDisplayCursorOn;
+    Boolean mShowInputDisplayCursor;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -49,6 +49,10 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
         mTxtV_numberCompCash = (TextView)view.findViewById(R.id.TextView_calculatorNumberStorageArea);
 
+        mInputDisplayCursorOn = false;
+        mShowInputDisplayCursor = true;
+        runCursorThread();
+
         clearCacheAndInput();
 
         setUpButtons();
@@ -60,13 +64,22 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         setUpButtons();
+        mShowInputDisplayCursor = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        
+        mShowInputDisplayCursor = false;
+        mTxtV_inputDisplay.setBackground(getResources().getDrawable(R.drawable.textview_calc_right_border_no_color));
     }
 
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        String tempStr;
+        
 
         //Search for button id pressed
         for (int buttonId = 0; buttonId <= buttonIdsList.size(); buttonId++) {
@@ -74,87 +87,32 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
             //If id found, buttonId is one of the buttons pressed
             if (id == buttonIdsList.get(buttonId)) {
 
-                // Equal sign in cash area means a calculation happened so clear cache and input.
-                if(mTxtV_numberCompCash.getText().toString().equals(mStr_EQUALS)){
-
-                    if(isAnOperatorBtn(buttonId)){    // If operator is button pressed, just clear the equals sign from cache
-                        tempStr = " ";
-                        mTxtV_numberCompCash.setText(tempStr);
-                    }
-                    else clearCacheAndInput();
-                }
-                else if (mTxtV_numberCompCash.getText().toString().equals(mStr_ERROR))  // error happened so clear cache and input
-                    clearCacheAndInput();
+                checkCacheAndInput(buttonId);
 
                 // Check what button was pressed
                 if (buttonId == BTN_CLR) {
-                   clearCacheAndInput();
+                    clearCacheAndInput();
                 }
                 else if (buttonId == BTN_EQUALS) {
-
-                    if (cacheIsEmpty() && inputIsEmpty()) {
-                        Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if ( cacheIsEmpty() || inputIsEmpty()){
-                        Toast.makeText(view.getContext(), "Two numbers needed for calculation.", Toast.LENGTH_SHORT).show();
-                        clearCacheAndInput();
-                    }
-                    else{
-                        try {
-
-                            DecimalFormat df = new DecimalFormat("#.##");
-                            Double total = calculateCacheAndInput();
-                            tempStr = stripTrailingZeros(df.format(total));
-                            mTxtV_inputDisplay.setText(tempStr);
-                            mTxtV_numberCompCash.setText(mStr_EQUALS);
-
-                        }catch (Exception e){
-                            Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            clearCacheAndInput();
-                        }
-                    }
+                    handleEqualsBtnPressed();
                 }
-                else if (buttonId == BTN_PLUS){
+                else if (buttonId == BTN_PLUS) {
                     operatorCalculation(mStr_PLUS);
                 }
-                else if (buttonId == BTN_MINUS){
+                else if (buttonId == BTN_MINUS) {
                     operatorCalculation(mStr_MINUS);
                 }
-                else if (buttonId == BTN_DIVIDE){
+                else if (buttonId == BTN_DIVIDE) {
                     operatorCalculation(mStr_DIVIDE);
                 }
-                else if (buttonId == BTN_TIMES){
+                else if (buttonId == BTN_TIMES) {
                     operatorCalculation(mStr_TIMES);
                 }
-                else if (buttonId == BTN_DECIMAL){
-                    tempStr = mTxtV_inputDisplay.getText().toString();
-
-                    // Check if a decimal can be added to string
-                    if(!tempStr.contains(".") && tempStr.length() < MAX_INPUT_LENGTH){
-
-                        if(tempStr.trim().isEmpty())
-                            tempStr = "0.";
-                        else
-                            tempStr = tempStr + ".";
-                        mTxtV_inputDisplay.setText(tempStr);
-                    }
+                else if (buttonId == BTN_DECIMAL) {
+                    handleDecimalBtnPressed();
                 }
                 else {   // i is a number so append it to current textView string
-                    tempStr = mTxtV_inputDisplay.getText().toString();
-
-                    if(tempStr.length() >= MAX_INPUT_LENGTH){}  //Do nothing. Max characters reached
-                    else if(buttonId == 0 && tempStr.startsWith("0") && !tempStr.contains(".")) {} // Do nothing. No leading zeros
-                    else{
-                        // No leading zeros. Replace with input digit
-                        if(tempStr.equals("0")){
-                            tempStr = Integer.toString(buttonId);
-                        }
-                        else {
-                            tempStr = tempStr + Integer.toString(buttonId);
-                        }
-
-                        mTxtV_inputDisplay.setText(tempStr);
-                    }
+                    handleNumberInputBtnPressed(buttonId);
                 }
                 buttonId = buttonIdsList.size() + 1; // break from loop
             }
@@ -162,6 +120,106 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     }
 
 
+    private void runCursorThread() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if(mShowInputDisplayCursor) {
+                    if (mInputDisplayCursorOn) {
+                        mTxtV_inputDisplay.setBackground(getResources().getDrawable(R.drawable.textview_calc_right_border_no_color));
+                    } else {
+                        mTxtV_inputDisplay.setBackground(getResources().getDrawable(R.drawable.textview_calc_right_border_color));
+                    }
+                    mInputDisplayCursorOn = !mInputDisplayCursorOn;
+                }
+                mTxtV_inputDisplay.postDelayed(this, 400);
+            }
+        };
+        runnable.run();
+    }
+
+
+    private void checkCacheAndInput(int buttonId){
+        String tempStr;
+
+        // Equal sign in cash area means a calculation happened so clear cache and input.
+        if(mTxtV_numberCompCash.getText().toString().equals(mStr_EQUALS)){
+
+            if(isAnOperatorBtn(buttonId)){    // If operator is button pressed, just clear the equals sign from cache
+                tempStr = " ";
+                mTxtV_numberCompCash.setText(tempStr);
+            }
+            else clearCacheAndInput();
+        }
+        else if (mTxtV_numberCompCash.getText().toString().equals(mStr_ERROR))  // error happened so clear cache and input
+            clearCacheAndInput();
+    }
+
+
+    private void handleEqualsBtnPressed(){
+        String tempStr;
+
+        if (cacheIsEmpty() && inputIsEmpty()) {
+            Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
+        }
+        else if ( cacheIsEmpty() || inputIsEmpty()){
+            Toast.makeText(view.getContext(), "Two numbers needed for calculation.", Toast.LENGTH_SHORT).show();
+            clearCacheAndInput();
+        }
+        else{
+            try {
+                DecimalFormat df = new DecimalFormat("#.##");
+                Double total = calculateCacheAndInput();
+
+
+                if(Double.toString(total).length() <= mMAX_CALCULATION_SIZE)
+                    tempStr = stripTrailingZeros(df.format(total));
+                else
+                    tempStr = stripTrailingZeros(Double.toString(total));
+
+
+                mTxtV_inputDisplay.setText(tempStr);
+                mTxtV_numberCompCash.setText(mStr_EQUALS);
+
+            }catch (Exception e){
+                Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                clearCacheAndInput();
+            }
+        }
+    }
+
+
+    private void handleDecimalBtnPressed(){
+        String tempStr = mTxtV_inputDisplay.getText().toString();
+
+        // Check if a decimal can be added to string
+        if(!tempStr.contains(".") && tempStr.length() < MAX_INPUT_LENGTH){
+
+            if(tempStr.trim().isEmpty())
+                tempStr = "0.";
+            else
+                tempStr = tempStr + ".";
+            mTxtV_inputDisplay.setText(tempStr);
+        }
+    }
+
+
+    private void handleNumberInputBtnPressed(int buttonId){
+        String tempStr = mTxtV_inputDisplay.getText().toString();
+
+        if(tempStr.length() >= MAX_INPUT_LENGTH){}  //Do nothing. Max characters reached
+        else if(buttonId == 0 && tempStr.startsWith("0") && !tempStr.contains(".")) {} // Do nothing. No leading zeros
+        else{
+            // No leading zeros. Replace with input digit
+            if(tempStr.equals("0")){
+                tempStr = Integer.toString(buttonId);
+            }
+            else {
+                tempStr = tempStr + Integer.toString(buttonId);
+            }
+
+            mTxtV_inputDisplay.setText(tempStr);
+        }
+    }
 
     private void clearCacheAndInput(){
         String tempStr = " ";
@@ -213,7 +271,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
                 Double total = calculateCacheAndInput();
                 DecimalFormat df = new DecimalFormat("#.##");
-                tempStr = stripTrailingZeros(df.format(total)) + " " + operator;
+
+                if(Double.toString(total).length() <= mMAX_CALCULATION_SIZE)
+                    tempStr = stripTrailingZeros(df.format(total)) + " " + operator;
+                else
+                    tempStr = stripTrailingZeros(Double.toString(total) + " " + operator);
+
                 mTxtV_numberCompCash.setText(tempStr);
                 tempStr = " ";
                 mTxtV_inputDisplay.setText(tempStr);

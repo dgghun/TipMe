@@ -15,40 +15,10 @@ public class MainActivity extends SingleFragmentActivity {
     public static String Users_Service = "";
 
 
-//    private static String FRAG_LAST = "";
-//    private final String END = "end";
-
-
     @Override
     protected Fragment createFragment() {
         return new MainFragment();
     }
-
-    //Handles back press navigation flags. Was having issues w/ onclick working when
-    //using the fragment stack from TipAmountFrag to BillAmountFrag. Using these
-    //flags for now until I figure the issue out.
-//    @Override
-//    public void onBackPressed(){
-//
-//        if(FRAG_LAST.equals(END))  // // Back pressed from MainFrag, Close app
-//            super.onBackPressed();
-//        else if(FRAG_LAST.equals(FRAG_MAIN_FRAG)) { // Back pressed from BillAmountFrag
-//            FRAG_LAST = END;       //set last to end
-//            replaceFragment(new MainFragment());
-//        }
-//        else if(FRAG_LAST.equals(FRAG_BILL_AMOUNT)) {   // Back pressed from HowWasSvcFrag
-//            FRAG_LAST = FRAG_MAIN_FRAG;     //set last to mainFragment
-//            replaceFragment(new BillAmountFragment());
-//        }
-//        else if(FRAG_LAST.equals(FRAG_HOW_WAS_SVC)){     // Back pressed from TipTotalsFrag
-//            FRAG_LAST = FRAG_BILL_AMOUNT;   //set last to BillAmountFrag
-//            replaceFragment(new HowWasSvcFragment());
-//        }
-//        else super.onBackPressed();
-//    }
-
-
-    /** METHODS **/
 
 
     /** replaceFragment(Fragment)
@@ -64,13 +34,13 @@ public class MainActivity extends SingleFragmentActivity {
         transaction.commit();
     }
 
+
     /** replaceFragment(Fragment, String)
      *
      * @param someFragment
      */
     public void replaceFragment(Fragment someFragment, String currentFrag){
 
-//        FRAG_LAST = currentFrag;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // fragment animation
