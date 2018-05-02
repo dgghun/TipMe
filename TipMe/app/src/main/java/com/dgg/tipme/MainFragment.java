@@ -5,25 +5,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.graphics.Typeface;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class MainFragment extends Fragment {
 
     private View view;
     private Button Btn_Tip;
-    private Button Btn_ItemizedTip;
     private Button Btn_Calculator;
     private TextView TxtView_MainHeader;
 
@@ -73,7 +67,7 @@ public class MainFragment extends Fragment {
         // Get handle on buttons
         Btn_Tip = (Button)view.findViewById(R.id.button_Tip);
         Btn_Calculator = (Button)view.findViewById(R.id.button_Calculator);
-        Btn_ItemizedTip = (Button) view.findViewById(R.id.button_ItemizedTip);
+
 
         // Tip button pressed
         Btn_Tip.setOnClickListener(new View.OnClickListener() {
@@ -89,16 +83,11 @@ public class MainFragment extends Fragment {
         Btn_Calculator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(), "Calculator coming soon!", Toast.LENGTH_SHORT).show();
+                Fragment fragment = new CalculatorFragment();
+                ((MainActivity)getActivity()).replaceFragment(fragment, MainActivity.FRAG_CALCULATOR);
             }
         });
 
-        Btn_ItemizedTip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(view.getContext(), "Itemized Tip coming soon!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 

@@ -9,6 +9,7 @@ public class MainActivity extends SingleFragmentActivity {
     public final static String FRAG_BILL_AMOUNT = "frag_bill_amount";
     public final static String FRAG_HOW_WAS_SVC = "frag_tip_amount";
     public final static String FRAG_TIP_TOTALS = "frag_tip_totals";
+    public final static String FRAG_CALCULATOR = "frag_tip_totals";
 
     public static String Users_Bill = "";
     public static String Users_Service = "";
@@ -20,8 +21,7 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-//        return new MainFragment();
-        return new CalculatorFragment();    //TESTING...Remove me!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        return new MainFragment();
     }
 
     //Handles back press navigation flags. Was having issues w/ onclick working when

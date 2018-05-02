@@ -3,6 +3,7 @@ package com.dgg.tipme;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.math.MathUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,8 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
     private final int MAX_INPUT_LENGTH = 10, MAX_OPERATIONS = 9;
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");    // formats 2 decimal places
-    private String mStr_PLUS = "\u002B", mStr_MINUS = "\u2212", mStr_TIMES = "\u00D7", mStr_DIVIDE = "\u00F7", mStr_EQUALS = "\u003D";
+    private final String mStr_PLUS = "\u002B", mStr_MINUS = "\u2212", mStr_TIMES = "\u00D7", mStr_DIVIDE = "\u00F7", mStr_EQUALS = "\u003D", mStr_ERROR = "ERROR";
+
 
 
     @Override
@@ -46,9 +48,8 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         mTxtV_inputDisplay.setTypeface(typeface);
 
         mTxtV_numberCompCash = (TextView)view.findViewById(R.id.TextView_calculatorNumberStorageArea);
-        mTxtV_numberCompCash.setText("");
 
-
+        clearCacheAndInput();
 
         setUpButtons();
         return view;
@@ -67,60 +68,63 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         int id = v.getId();
         String tempStr;
 
-        // Equal sign in cash area means a calculation happened already so remove it.
-        if(mTxtV_numberCompCash.getText().toString().equals(mStr_EQUALS)){
-            tempStr = "";
-            mTxtV_numberCompCash.setText(tempStr);
-        }
-
         //Search for button id pressed
         for (int buttonId = 0; buttonId <= buttonIdsList.size(); buttonId++) {
 
-            if (id == buttonIdsList.get(buttonId)) {   //If id found, i is one of the buttons pressed
+            //If id found, buttonId is one of the buttons pressed
+            if (id == buttonIdsList.get(buttonId)) {
 
+                // Equal sign in cash area means a calculation happened so clear cache and input.
+                if(mTxtV_numberCompCash.getText().toString().equals(mStr_EQUALS)){
+
+                    if(isAnOperatorBtn(buttonId)){    // If operator is button pressed, just clear the equals sign from cache
+                        tempStr = " ";
+                        mTxtV_numberCompCash.setText(tempStr);
+                    }
+                    else clearCacheAndInput();
+                }
+                else if (mTxtV_numberCompCash.getText().toString().equals(mStr_ERROR))  // error happened so clear cache and input
+                    clearCacheAndInput();
+
+                // Check what button was pressed
                 if (buttonId == BTN_CLR) {
-                    tempStr = " ";
-                    mTxtV_inputDisplay.setText(tempStr);
-                    mTxtV_numberCompCash.setText(tempStr);
-
+                   clearCacheAndInput();
                 }
                 else if (buttonId == BTN_EQUALS) {
 
-//                    if (mArray_inputOperations.size() <= 1 && mTxtV_inputDisplay.getText().toString().trim().isEmpty()){
-//                        Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else if (mTxtV_inputDisplay.getText().toString().trim().isEmpty() && mArray_inputOperations.size() > 2){
-//
-//                        //If input is blank & there are operations, there is a trailing operator error.
-//                        tempStr = "Input Error";
-//                        mTxtV_numberCompCash.setText(tempStr);
-//                        tempStr = " ";
-//                        mTxtV_inputDisplay.setText(tempStr);
-//                        mArray_inputOperations.clear();
-//                        Toast.makeText(view.getContext(), "Trailing operator error.", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else{
-//                        calculateAndUpdateViews();
-//                    }
+                    if (cacheIsEmpty() && inputIsEmpty()) {
+                        Toast.makeText(view.getContext(), "No numbers to compute.", Toast.LENGTH_SHORT).show();
+                    }
+                    else if ( cacheIsEmpty() || inputIsEmpty()){
+                        Toast.makeText(view.getContext(), "Two numbers needed for calculation.", Toast.LENGTH_SHORT).show();
+                        clearCacheAndInput();
+                    }
+                    else{
+                        try {
+
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            Double total = calculateCacheAndInput();
+                            tempStr = stripTrailingZeros(df.format(total));
+                            mTxtV_inputDisplay.setText(tempStr);
+                            mTxtV_numberCompCash.setText(mStr_EQUALS);
+
+                        }catch (Exception e){
+                            Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            clearCacheAndInput();
+                        }
+                    }
                 }
                 else if (buttonId == BTN_PLUS){
-
                     operatorCalculation(mStr_PLUS);
-
                 }
                 else if (buttonId == BTN_MINUS){
-
                     operatorCalculation(mStr_MINUS);
-
                 }
                 else if (buttonId == BTN_DIVIDE){
-
                     operatorCalculation(mStr_DIVIDE);
-
                 }
                 else if (buttonId == BTN_TIMES){
                     operatorCalculation(mStr_TIMES);
-
                 }
                 else if (buttonId == BTN_DECIMAL){
                     tempStr = mTxtV_inputDisplay.getText().toString();
@@ -134,7 +138,6 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
                             tempStr = tempStr + ".";
                         mTxtV_inputDisplay.setText(tempStr);
                     }
-
                 }
                 else {   // i is a number so append it to current textView string
                     tempStr = mTxtV_inputDisplay.getText().toString();
@@ -160,37 +163,44 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
 
 
-
+    private void clearCacheAndInput(){
+        String tempStr = " ";
+        mTxtV_inputDisplay.setText(tempStr);
+        mTxtV_numberCompCash.setText(tempStr);
+    }
 
     private Boolean cacheIsEmpty(){
-        return (mTxtV_numberCompCash.getText().toString().trim().length() <= 1);
+        return (mTxtV_numberCompCash.getText().toString().trim().length() <= 0 || mTxtV_numberCompCash.getText().toString().trim().equals(""));
+    }
+
+    private Boolean inputIsEmpty(){
+        return (mTxtV_inputDisplay.getText().toString().trim().length() <= 0 && mTxtV_inputDisplay.getText().toString().trim().equals(""));
     }
 
 
-
+    private Boolean isAnOperatorBtn(int btn){
+        return btn == BTN_DECIMAL || btn == BTN_PLUS || btn == BTN_MINUS || btn == BTN_TIMES || btn == BTN_DIVIDE;
+    }
 
     private Boolean cacheContainsOperator(){
         String cache = mTxtV_numberCompCash.getText().toString();
         return (cache.contains(mStr_DIVIDE) || cache.contains(mStr_TIMES) || cache.contains(mStr_PLUS) || cache.contains(mStr_MINUS) || cache.contains(mStr_EQUALS));
     }
-    private void calculateNumbers(String operator){
-        Toast.makeText(view.getContext(), "calculateNumebrs()", Toast.LENGTH_SHORT).show();
-        if(mTxtV_numberCompCash.getText().toString().trim().endsWith(operator)){
 
-        }
-    }
 
 
     private void operatorCalculation(String operator){
 
         String tempStr;
 
+        //If cache is empty, set the cache to the current input and operator, then clear input
         if(cacheIsEmpty()){
             tempStr = mTxtV_inputDisplay.getText().toString() + " " + operator;
             mTxtV_numberCompCash.setText(tempStr);
             tempStr = " ";
             mTxtV_inputDisplay.setText(tempStr);
         }
+        // else if cache has something and there isn't input, switch operator in cache to new operator
         else if(cacheContainsOperator() && mTxtV_inputDisplay.getText().toString().trim().length() <= 0){
             tempStr = mTxtV_numberCompCash.getText().toString().trim();
             tempStr = tempStr.substring(0, tempStr.length() - 2) + " " + operator;
@@ -198,20 +208,20 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         }
         else{
 
-            Double total = calculateCahceAndInput();
+            // Try getting total, if exception display error.
+            try {
 
-            // if no errors in calculation
-            if(total >= 0.0){
-                tempStr = stripTrailingZeros(Double.toString(total)) + " " + operator;
+                Double total = calculateCacheAndInput();
+                DecimalFormat df = new DecimalFormat("#.##");
+                tempStr = stripTrailingZeros(df.format(total)) + " " + operator;
                 mTxtV_numberCompCash.setText(tempStr);
                 tempStr = " ";
                 mTxtV_inputDisplay.setText(tempStr);
-            }else{
-                tempStr = " ";
-                mTxtV_inputDisplay.setText(tempStr);
-                mTxtV_numberCompCash.setText(tempStr);
+
+            }catch (Exception e){
+                Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                clearCacheAndInput();
             }
-
         }
     }
 
@@ -220,12 +230,12 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
      *
      * @return double or -1 if division by zero
      */
-    private double calculateCahceAndInput(){
+    private double calculateCacheAndInput() throws IOException{
 
         Double total = 0.0;
-        String cahceStr = mTxtV_numberCompCash.getText().toString().trim();
-        String operator = cahceStr.substring(cahceStr.length() - 1);
-        Double num1 = Double.parseDouble(cahceStr.substring(0, cahceStr.length() - 2));
+        String cacheStr = mTxtV_numberCompCash.getText().toString().trim();
+        String operator = cacheStr.substring(cacheStr.length() - 1);
+        Double num1 = Double.parseDouble(cacheStr.substring(0, cacheStr.length() - 2));
         Double num2 = Double.parseDouble(mTxtV_inputDisplay.getText().toString().trim());
 
         if (operator.equals(mStr_PLUS)){
@@ -239,13 +249,14 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         }
         else if (operator.equals(mStr_DIVIDE)){
 
-            if(num2 <= 0.0) {
-                Toast.makeText(view.getContext(), "Can't divide by zero.", Toast.LENGTH_SHORT).show();
-                return -1.0;
+            if(num2 == 0.0) {
+                throw new IOException("Can't divide by zero");
             }
             else
                 total = num1 / num2;
         }
+
+        total = Math.round(total * 100) / 100.0d;
 
         return total;
     }
@@ -254,8 +265,6 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     private String stripTrailingZeros(String number){
         return number.replaceAll("()\\.0+$|(\\..+?)0+$", "");
     }
-
-
 
 
 
